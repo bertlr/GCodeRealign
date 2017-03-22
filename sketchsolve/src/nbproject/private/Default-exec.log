@@ -1,0 +1,45 @@
+called: /usr/bin/g++
+	/home/herbert/c++/sketchsolve/src
+	/usr/bin/g++
+	-I/home/herbert/c++/sketchsolve/src
+	-g
+	-static
+	-m32
+	-L/usr/lib
+	-g3
+	-gdwarf-2
+	-o
+	CMakeFiles/sketchsolve.dir/Derivatives.cpp.o
+	-c
+	/home/herbert/c++/sketchsolve/src/Derivatives.cpp
+
+called: /usr/bin/g++
+	/home/herbert/c++/sketchsolve/src
+	/usr/bin/g++
+	-I/home/herbert/c++/sketchsolve/src
+	-g
+	-static
+	-m32
+	-L/usr/lib
+	-g3
+	-gdwarf-2
+	-o
+	CMakeFiles/sketchsolve.dir/solve.cpp.o
+	-c
+	/home/herbert/c++/sketchsolve/src/solve.cpp
+
+called: /usr/bin/g++
+	/home/herbert/c++/sketchsolve/src
+	/usr/bin/g++
+	-I/home/herbert/c++/sketchsolve/src
+	-g
+	-static
+	-m32
+	-L/usr/lib
+	-g3
+	-gdwarf-2
+	-o
+	CMakeFiles/sketchsolve.dir/main.cpp.o
+	-c
+	/home/herbert/c++/sketchsolve/src/main.cpp
+

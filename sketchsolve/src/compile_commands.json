@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/herbert/c++/sketchsolve/src",
+  "command": "/usr/bin/g++    -I/home/herbert/c++/sketchsolve/src  -g -static  -L/usr/lib -g3 -gdwarf-2   -o CMakeFiles/sketchsolve.dir/ConstraintedValue.cpp.o -c /home/herbert/c++/sketchsolve/src/ConstraintedValue.cpp",
+  "file": "/home/herbert/c++/sketchsolve/src/ConstraintedValue.cpp"
+},
+{
+  "directory": "/home/herbert/c++/sketchsolve/src",
+  "command": "/usr/bin/g++    -I/home/herbert/c++/sketchsolve/src  -g -static  -L/usr/lib -g3 -gdwarf-2   -o CMakeFiles/sketchsolve.dir/LineTo.cpp.o -c /home/herbert/c++/sketchsolve/src/LineTo.cpp",
+  "file": "/home/herbert/c++/sketchsolve/src/LineTo.cpp"
+},
+{
+  "directory": "/home/herbert/c++/sketchsolve/src",
+  "command": "/usr/bin/g++    -I/home/herbert/c++/sketchsolve/src  -g -static  -L/usr/lib -g3 -gdwarf-2   -o CMakeFiles/sketchsolve.dir/Derivatives.cpp.o -c /home/herbert/c++/sketchsolve/src/Derivatives.cpp",
+  "file": "/home/herbert/c++/sketchsolve/src/Derivatives.cpp"
+},
+{
+  "directory": "/home/herbert/c++/sketchsolve/src",
+  "command": "/usr/bin/g++    -I/home/herbert/c++/sketchsolve/src  -g -static  -L/usr/lib -g3 -gdwarf-2   -o CMakeFiles/sketchsolve.dir/solve.cpp.o -c /home/herbert/c++/sketchsolve/src/solve.cpp",
+  "file": "/home/herbert/c++/sketchsolve/src/solve.cpp"
+},
+{
+  "directory": "/home/herbert/c++/sketchsolve/src",
+  "command": "/usr/bin/g++    -I/home/herbert/c++/sketchsolve/src  -g -static  -L/usr/lib -g3 -gdwarf-2   -o CMakeFiles/sketchsolve.dir/Polyline.cpp.o -c /home/herbert/c++/sketchsolve/src/Polyline.cpp",
+  "file": "/home/herbert/c++/sketchsolve/src/Polyline.cpp"
+},
+{
+  "directory": "/home/herbert/c++/sketchsolve/src",
+  "command": "/usr/bin/g++    -I/home/herbert/c++/sketchsolve/src  -g -static  -L/usr/lib -g3 -gdwarf-2   -o CMakeFiles/sketchsolve.dir/main.cpp.o -c /home/herbert/c++/sketchsolve/src/main.cpp",
+  "file": "/home/herbert/c++/sketchsolve/src/main.cpp"
+}
+]

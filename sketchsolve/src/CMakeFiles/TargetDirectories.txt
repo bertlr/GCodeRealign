@@ -1,0 +1,3 @@
+/home/herbert/c++/sketchsolve/src/CMakeFiles/rebuild_cache.dir
+/home/herbert/c++/sketchsolve/src/CMakeFiles/edit_cache.dir
+/home/herbert/c++/sketchsolve/src/CMakeFiles/sketchsolve.dir

@@ -1,0 +1,11 @@
+Scanning dependencies of target sketchsolve
+[ 25%] Building CXX object CMakeFiles/sketchsolve.dir/Derivatives.cpp.o
+[ 50%] Building CXX object CMakeFiles/sketchsolve.dir/solve.cpp.o
+[ 75%] Building CXX object CMakeFiles/sketchsolve.dir/main.cpp.o
+/home/herbert/c++/sketchsolve/src/main.cpp:13:23: fatal error: src/solve.h: Datei oder Verzeichnis nicht gefunden
+ #include "src/solve.h"
+                       ^
+compilation terminated.
+gmake[2]: *** [CMakeFiles/sketchsolve.dir/build.make:111: CMakeFiles/sketchsolve.dir/main.cpp.o] Fehler 1
+gmake[1]: *** [CMakeFiles/Makefile2:68: CMakeFiles/sketchsolve.dir/all] Fehler 2
+gmake: *** [Makefile:84: all] Fehler 2

@@ -1,0 +1,1 @@
+/usr/bin/g++   -g -static  -L/usr/lib -g3 -gdwarf-2   CMakeFiles/sketchsolve.dir/ConstraintedValue.cpp.o CMakeFiles/sketchsolve.dir/LineTo.cpp.o CMakeFiles/sketchsolve.dir/Derivatives.cpp.o CMakeFiles/sketchsolve.dir/solve.cpp.o CMakeFiles/sketchsolve.dir/Polyline.cpp.o CMakeFiles/sketchsolve.dir/main.cpp.o  -o sketchsolve -rdynamic 
