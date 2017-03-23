@@ -4,7 +4,7 @@ A geometric constraint solver. It allows to define relationsships between the el
 
 # Installation
 
-* Download from: [http://plugins.netbeans.org/plugin/68344/](http://plugins.netbeans.org/plugin/68344/ )
+* Download from: [http://plugins.netbeans.org/plugin/71602/](http://plugins.netbeans.org/plugin/71602/ )
 * Go to "Tools" -> "Plugins" -> "Downloaded", click "Add Plugins..." and select the downloaded file org-roiderh-gcoderealign.nbm
 * Check the Checkbox and click "Install"
 
