@@ -12,8 +12,12 @@ A geometric constraint solver. It allows to define relationsships between the el
 
 Select a pice of g-code which describes a contour. Click the Toolbar button.
 
-![Selected g-code which describes the contour](screen_1.png )
+![Selected g-code which describes the contour with form for constraints](GcodeRealign_screen_before.png )
 
 Define the relationsships of the contour elements like fixed points and angles and click "calculate".
 Click "ok" to replace selected contour by the new calculated contour.
+
+![Already solved the contour](GcodeRealign_screen_after.png )
+
+click "ok" to replace the selected G-code with the new solved G-code.
 
