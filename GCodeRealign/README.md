@@ -1,6 +1,6 @@
 # GCodeRealign
 
-Allow to define relationsship between the elements (lines and arcs) of a contour and solve it.
+A geometric constraint solver. It allows to define relationsships between the elements (lines and arcs) of a contour and solve it.
 
 # Installation
 

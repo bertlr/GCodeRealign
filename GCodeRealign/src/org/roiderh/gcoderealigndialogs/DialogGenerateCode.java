@@ -111,8 +111,8 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 }
 
                 @Override
-                public void mouseExited(MouseEvent me) {                    
-                    int j = lineElementsForm.panels.indexOf(me.getSource());                   
+                public void mouseExited(MouseEvent me) {
+                    int j = lineElementsForm.panels.indexOf(me.getSource());
                     toolpath.unhighlightElements();
                 }
             });
@@ -276,6 +276,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
             //System.out.println(System.getProperty("os.arch").toLowerCase(Locale.ENGLISH)); // amd64
             //System.out.println(System.getProperty("os.name").toLowerCase(Locale.ENGLISH)); // linux
+            gr.calc_contour(c_elements);
             lineElementsForm.fillForm();
             this.drawGraph();
 
@@ -317,6 +318,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         jButtonCalculate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "DialogGenerateCode.title")); // NOI18N
 
         jSplitPaneViewEditor.setResizeWeight(0.5);
         jSplitPaneViewEditor.setLastDividerLocation(101);
@@ -325,11 +327,11 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         jPanelView.setLayout(jPanelViewLayout);
         jPanelViewLayout.setHorizontalGroup(
             jPanelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 391, Short.MAX_VALUE)
+            .addGap(0, 660, Short.MAX_VALUE)
         );
         jPanelViewLayout.setVerticalGroup(
             jPanelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 460, Short.MAX_VALUE)
+            .addGap(0, 617, Short.MAX_VALUE)
         );
 
         jSplitPaneViewEditor.setLeftComponent(jPanelView);
@@ -354,7 +356,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 .addGap(63, 63, 63))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPaneViewEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
+                .addComponent(jSplitPaneViewEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 1094, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -442,6 +444,9 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
     }
 
+    /**
+     * Create Contour from G-code
+     */
     public void readContour() {
         //java.util.ArrayList<String> args = new java.util.ArrayList<>();
         try {
@@ -453,7 +458,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
             }
             gr.calc_contour(c_elements);
 
-            this.cleanup_contour(c_elements);
+            //this.cleanup_contour(c_elements);
 
         } catch (Exception e1) {
             System.out.println("Error " + e1.toString());

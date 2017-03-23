@@ -31,7 +31,7 @@ import org.roiderh.gcoderealigndialogs.DialogGenerateCode;
         id = "org.roiderh.gcoderealign.GCodeRealignActionListener"
 )
 @ActionRegistration(
-        iconBase = "org/roiderh/gcoderealign/hi22-gcode-generator.png",
+        iconBase = "org/roiderh/gcoderealign/hi22-gcode-realign.png",
         displayName = "#CTL_GCodeRealignActionListener"
 )
 @ActionReferences({
@@ -51,16 +51,19 @@ public final class GCodeRealignActionListener implements ActionListener {
             JOptionPane.showMessageDialog(null, "Error: no open editor");
             return;
         }
-
         this.selectedText = ed.getSelectedText();
         if (selectedText == null) {
-            selectedText = "";
+            JOptionPane.showMessageDialog(null, "Error: no selected Text");
+            return;
         }
-
-        //try {
+        if (selectedText.length() < 1) {
+            JOptionPane.showMessageDialog(null, "Error: no selected Text");
+            return;
+        }
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
                     DialogGenerateCode dialog = new DialogGenerateCode(selectedText, org.openide.windows.WindowManager.getDefault().getMainWindow(), true);
@@ -81,6 +84,7 @@ public final class GCodeRealignActionListener implements ActionListener {
                 }
 
             }
-        });
+        }
+        );
     }
 }
