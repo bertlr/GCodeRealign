@@ -10,7 +10,7 @@ A geometric constraint solver. It allows to define relationsships between the el
 
 # Usage
 
-Select a pice of g-code which describes a contour. Click the Toolbar button.
+Select a pice of g-code which describes a contour. Click the Toolbar button ![Toolbarbutton to open the Solver](src/org/roiderh/gcoderealign/hi22-gcode-realign.png ).
 
 ![Selected g-code which describes the contour with form for constraints](GcodeRealign_screen_before.png )
 
