@@ -2,3 +2,7 @@ build
 nbproject/private
 dist
 CMakeFiles
+*.o
+*.dll
+*.so
+
