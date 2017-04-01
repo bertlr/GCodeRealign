@@ -1,6 +1,6 @@
 # GCodeRealign
 
-A NetBeans module for geometry processing.
+[gCodeRealign](GCodeRealign/README.md) is a NetBeans module for geometry processing.
 Geometry processor for G-Code, only for lathe
 
 ## sketchsolve
