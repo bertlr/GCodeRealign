@@ -40,7 +40,7 @@ import math.geom2d.conic.CircleArc2D;
  *
  * @author Herbert Roider <herbert@roider.at>
  */
-public class DialogGenerateCode extends javax.swing.JDialog implements ActionListener, FocusListener {
+public class DialogGenerateCode extends javax.swing.JDialog implements ActionListener {
 
     /**
      * all Contourelements:
@@ -107,13 +107,13 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 @Override
                 public void mouseEntered(MouseEvent me) {
                     int j = lineElementsForm.panels.indexOf(me.getSource());
-                    toolpath.highlightElement(j - 1);// first Element is a point
+                    toolpath.highlightElement(j);// first Element is a point
                 }
 
                 @Override
                 public void mouseExited(MouseEvent me) {
-                    int j = lineElementsForm.panels.indexOf(me.getSource());
-                    toolpath.unhighlightElements();
+                    //int j = lineElementsForm.panels.indexOf(me.getSource());
+                    //toolpath.unhighlightElements();
                 }
             });
 
@@ -289,17 +289,6 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
             this.setVisible(false);
         }
 
-    }
-
-    @Override
-    public void focusGained(FocusEvent e) {
-        System.out.println("focusGained");
-
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-        //System.out.println("focusLost");
     }
 
     /**

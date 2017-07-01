@@ -15,16 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.roiderh.gcoderealigndialogs;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Path;
 
 /**
  *
  * @author Herbert Roider <herbert@roider.at>
  */
-public class ToolpathElement extends Path {
+public class ToolpathElement  {
     /**
      * the contourelement which forms the path element
      */
     public org.roiderh.gcodeviewer.contourelement element = null;
+    public Path path = null;
+    public Circle endpoint = null;
     
 }

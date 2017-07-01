@@ -26,8 +26,10 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcTo;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import math.geom2d.Point2D;
@@ -47,6 +49,7 @@ public class Toolpath extends AnchorPane {
     private double pressedX, pressedY;
 
     private Text text = null;
+    //private Circle endpoint = null;
     public double fact = 1.0;
     //public double prev_fact = 1.0;
     public double x_trans = 0.0;
@@ -61,7 +64,9 @@ public class Toolpath extends AnchorPane {
      * holds only the Path elements
      */
     public LinkedList<ToolpathElement> shapes = new LinkedList<>();
-
+    
+    //public LinkedList<Circle> endpoints = new LinkedList<>();
+    
     public Toolpath() {
 
         //setStyle("-fx-border-color: blue;");
@@ -111,7 +116,7 @@ public class Toolpath extends AnchorPane {
     }
 
     public math.geom2d.Box2D getBoundingBox(LinkedList<CirculinearElement2D> c_el) {
-
+        
         c_el.add(new Line2D(c_el.getLast().lastPoint(), c_el.getFirst().firstPoint()));
         math.geom2d.Box2D bb = null;
 
@@ -156,7 +161,7 @@ public class Toolpath extends AnchorPane {
                 continue;
             }
             if (current_ce.curve.length() == 0) {
-                continue;
+                //continue;
             }
             elements.add(current_ce.curve);
 
@@ -176,17 +181,18 @@ public class Toolpath extends AnchorPane {
         this.getChildren().clear();
         for (contourelement current_ce : c_elements) {
 
-            if (current_ce.curve == null) {
-                continue;
-            }
-            if (current_ce.curve.length() == 0) {
-                continue;
-            }
+//            if (current_ce.curve == null) {
+//                continue;
+//            }
+//            if (current_ce.curve.length() == 0) {
+//                continue;
+//            }
 
             /*
              Add the current element to the contour as multiple lines.
              */
-            ToolpathElement path = new ToolpathElement();
+            ToolpathElement tpe = new ToolpathElement();
+            tpe.path = new Path();
 
             //Shape l = null;
             if (current_ce.curve instanceof math.geom2d.conic.CircleArc2D) {
@@ -219,8 +225,10 @@ public class Toolpath extends AnchorPane {
                 at.setRadiusY(radius);
                 at.setX(p2.getX());
                 at.setY(p2.getY());
-                path.getElements().add(mt);
-                path.getElements().add(at);
+                tpe.path.getElements().add(mt);
+                tpe.path.getElements().add(at);
+                tpe.endpoint = new Circle(p2.getX(), p2.getY(), 4);
+                
 
             } else {
                 LineSegment2D geo = (LineSegment2D) current_ce.curve;
@@ -237,8 +245,9 @@ public class Toolpath extends AnchorPane {
                 LineTo lt = new LineTo();
                 lt.setX(p2.getX());
                 lt.setY(p2.getY());
-                path.getElements().add(mt);
-                path.getElements().add(lt);
+                tpe.path.getElements().add(mt);
+                tpe.path.getElements().add(lt);
+                tpe.endpoint = new Circle(p2.getX(), p2.getY(), 4);
 
             }
             if (current_ce.transition_curve != null) {
@@ -266,7 +275,7 @@ public class Toolpath extends AnchorPane {
                     at.setRadiusY(geo.supportingCircle().radius() * fact);
                     at.setX(p2.getX());
                     at.setY(p2.getY());
-                    path.getElements().add(at);
+                    tpe.path.getElements().add(at);
 
                 } else {
 
@@ -277,19 +286,27 @@ public class Toolpath extends AnchorPane {
                     LineTo lt = new LineTo();
                     lt.setX(p2.getX());
                     lt.setY(p2.getY());
-                    path.getElements().add(lt);
+                    tpe.path.getElements().add(lt);
 
                 }
             }
 
-            path.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            tpe.path.setOnMouseEntered(new EventHandler<MouseEvent>() {
 
                 @Override
                 public void handle(MouseEvent event) {
                     NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
                     DecimalFormat df = (DecimalFormat) nf;
                     df.applyPattern("0.###");
-                    contourelement current_ce = ((ToolpathElement) event.getSource()).element;
+                    
+                    contourelement current_ce = null;
+                    for (ToolpathElement te : shapes) {
+                        if (te.path.equals(event.getSource())) {
+                            current_ce = te.element;
+
+                        }
+                    }
+                    //contourelement current_ce = ((ToolpathElement) event.getSource()).element;
 
                     point startpoint = current_ce.points.getFirst();
                     point endpoint = current_ce.points.getLast();
@@ -345,7 +362,7 @@ public class Toolpath extends AnchorPane {
                 }
             });
 
-            path.setOnMouseExited(new EventHandler<MouseEvent>() {
+            tpe.path.setOnMouseExited(new EventHandler<MouseEvent>() {
 
                 @Override
                 public void handle(MouseEvent event) {
@@ -356,15 +373,19 @@ public class Toolpath extends AnchorPane {
 
                 }
             });
-            path.element = current_ce;
-            path.setStrokeWidth(2);
-            path.setStroke(Color.BLACK);
+            tpe.element = current_ce;
+            tpe.path.setStrokeWidth(2);
+            tpe.path.setStroke(Color.BLACK);
             if (current_ce.feed == contourelement.Feed.RAPID) {
-                path.setStyle("-fx-stroke-dash-array: 1 3 ; ");
+                tpe.path.setStyle("-fx-stroke-dash-array: 1 3 ; ");
             }
 
-            shapes.add(path);
-            getChildren().add(path);
+            shapes.add(tpe);
+            getChildren().add(tpe.path);
+            tpe.endpoint.setStroke(Color.YELLOWGREEN);
+            tpe.endpoint.setFill(Color.YELLOWGREEN);
+            tpe.endpoint.setVisible(false);
+            getChildren().add(tpe.endpoint);
 
         }
 
@@ -440,7 +461,10 @@ public class Toolpath extends AnchorPane {
     }
 
     public void highlightElement(ToolpathElement te) {
-        te.setStroke(Color.YELLOW);
+        unhighlightElements();
+        te.path.setStroke(Color.YELLOWGREEN);
+        te.endpoint.setVisible(true);
+        
 
     }
 
@@ -448,6 +472,7 @@ public class Toolpath extends AnchorPane {
         for (ToolpathElement te : shapes) {
             if (te.element.equals(ce)) {
                 highlightElement(te);
+                
             }
         }
     }
@@ -463,7 +488,8 @@ public class Toolpath extends AnchorPane {
     public void unhighlightElements() {
         for (ToolpathElement te : shapes) {
 
-            te.setStroke(Color.BLACK);
+            te.path.setStroke(Color.BLACK);
+            te.endpoint.setVisible(false);
 
         }
 
