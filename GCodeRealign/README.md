@@ -1,6 +1,8 @@
 # GCodeRealign
 
 A geometric constraint solver. It allows to define relationsships between the elements (lines and arcs) of a contour and solve it.
+The solver use sketchsolve from:
+[https://code.google.com/archive/p/sketchsolve/](https://code.google.com/archive/p/sketchsolve/)
 
 # Installation
 
