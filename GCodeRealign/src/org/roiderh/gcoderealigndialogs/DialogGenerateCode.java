@@ -23,8 +23,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.LinkedList;
-import math.geom2d.circulinear.CirculinearElement2D;
-import math.geom2d.circulinear.PolyCirculinearCurve2D;
 import org.roiderh.gcodeviewer.contourelement;
 import org.roiderh.gcodeviewer.gcodereader;
 import contoursolveinterface.Contour;
@@ -108,6 +106,13 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 public void mouseEntered(MouseEvent me) {
                     int j = lineElementsForm.panels.indexOf(me.getSource());
                     toolpath.highlightElement(j);// first Element is a point
+                    for(PanelContourelement pc : lineElementsForm.panels){
+                        pc.setBorder(BorderFactory.createLineBorder(Color.black));
+                    }
+                    PanelContourelement pc = (PanelContourelement)me.getSource();
+                    pc.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+                    
+                    
                 }
 
                 @Override
@@ -405,32 +410,6 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 dialog.setVisible(true);
             }
         });
-    }
-
-    /**
-     * transform and cleanup the contour
-     *
-     * @param contour
-     * @return
-     */
-    private PolyCirculinearCurve2D<CirculinearElement2D> cleanup_contour(LinkedList<contourelement> contour) {
-        PolyCirculinearCurve2D<CirculinearElement2D> elements = new PolyCirculinearCurve2D<>();
-        for (contourelement current_ce : contour) {
-
-            if (current_ce.curve == null) {
-                continue;
-            }
-            if (current_ce.curve.length() == 0) {
-                continue;
-            }
-            elements.add(current_ce.curve);
-
-            if (current_ce.transition_curve != null) {
-                elements.add(current_ce.transition_curve);
-            }
-        }
-        return elements;
-
     }
 
     /**

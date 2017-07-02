@@ -174,8 +174,6 @@ public class PanelContourelement extends JPanel {
 
         }
         this.setBorder(BorderFactory.createLineBorder(Color.black));
-        this.setFocusable(true);
-        this.setRequestFocusEnabled(true);
 
     }
 
