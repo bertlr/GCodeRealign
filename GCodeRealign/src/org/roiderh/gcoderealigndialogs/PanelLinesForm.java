@@ -20,20 +20,13 @@ import java.util.LinkedList;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import org.roiderh.gcodeviewer.contourelement;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 
 /**
  *
  * @author Herbert Roider <herbert@roider.at>
  */
-public class PanelLinesForm extends JPanel implements ActionListener, FocusListener {
+public class PanelLinesForm extends JPanel {
 
     public LinkedList<contourelement> contour;
     public LinkedList<PanelContourelement> panels;
@@ -44,26 +37,6 @@ public class PanelLinesForm extends JPanel implements ActionListener, FocusListe
 
     }
 
-    /**
-     *
-     * @param e
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
-
-    @Override
-    public void focusGained(FocusEvent e) {
-        System.out.println("focusGained...");
-
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-        System.out.println("focusLost...");
-    }
-
     public void createPanels(LinkedList<contourelement> _contour) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         contour = _contour;
@@ -72,36 +45,7 @@ public class PanelLinesForm extends JPanel implements ActionListener, FocusListe
 
         for (contourelement current_ce : contour) {
             PanelContourelement panel = new PanelContourelement(current_ce, prev_ce);
-            panel.addFocusListener(this);
             this.add(panel);
-//            panel.addMouseListener(new MouseListener() {
-//
-//                @Override
-//                public void mousePressed(MouseEvent me) {
-//                    //requestFocus();
-//                    System.out.println("Mouse mousePressed in JPanel");
-//                }
-//
-//                @Override
-//                public void mouseReleased(MouseEvent me) {
-//                System.out.println("Mouse mouseReleased in JPanel");
-//                }
-//
-//                @Override
-//                public void mouseClicked(MouseEvent me) {
-//                System.out.println("Mouse mouseClicked in JPanel");
-//                }
-//
-//                @Override
-//                public void mouseEntered(MouseEvent me) {
-//                System.out.println("Mouse mouseEntered in JPanel");
-//                }
-//
-//                @Override
-//                public void mouseExited(MouseEvent me) {
-//                System.out.println("Mouse mouseExited in JPanel");
-//                }
-//            });
 
             prev_ce = current_ce;
 
@@ -111,13 +55,8 @@ public class PanelLinesForm extends JPanel implements ActionListener, FocusListe
     }
 
     public void fillForm() {
-        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
-        DecimalFormat df = (DecimalFormat) nf;
-        df.applyPattern("0.###");
 
         for (int i = 0; i < contour.size(); i++) {
-            contourelement ce = contour.get(i);
-
             PanelContourelement panel = panels.get(i);
             panel.fillForm();
 
