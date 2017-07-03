@@ -231,7 +231,8 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                             ce.tangent);
 
                 }
-
+                //System.out.println("Solution for " + i + " Element: " + pl.solve(handle));
+                
             }
 
             int solution = -1;
