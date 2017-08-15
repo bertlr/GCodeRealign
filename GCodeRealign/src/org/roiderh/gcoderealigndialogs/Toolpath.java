@@ -181,20 +181,12 @@ public class Toolpath extends AnchorPane {
         this.getChildren().clear();
         for (contourelement current_ce : c_elements) {
 
-//            if (current_ce.curve == null) {
-//                continue;
-//            }
-//            if (current_ce.curve.length() == 0) {
-//                continue;
-//            }
-
             /*
              Add the current element to the contour as multiple lines.
              */
             ToolpathElement tpe = new ToolpathElement();
             tpe.path = new Path();
 
-            //Shape l = null;
             if (current_ce.curve instanceof math.geom2d.conic.CircleArc2D) {
                 CircleArc2D geo = (CircleArc2D) current_ce.curve;
 
@@ -227,7 +219,6 @@ public class Toolpath extends AnchorPane {
                 at.setY(p2.getY());
                 tpe.path.getElements().add(mt);
                 tpe.path.getElements().add(at);
-                tpe.endpoint = new Circle(p2.getX(), p2.getY(), 4);
                 
 
             } else {
@@ -247,9 +238,12 @@ public class Toolpath extends AnchorPane {
                 lt.setY(p2.getY());
                 tpe.path.getElements().add(mt);
                 tpe.path.getElements().add(lt);
-                tpe.endpoint = new Circle(p2.getX(), p2.getY(), 4);
 
             }
+            Point2D vertex = new Point2D(current_ce.points.getLast().x, current_ce.points.getLast().y);
+            vertex = this.translateScalePoint(vertex);
+            tpe.endpoint = new Circle(vertex.getX(), vertex.getY(), 4);
+            
             if (current_ce.transition_curve != null) {
                 if (current_ce.transition_curve instanceof math.geom2d.conic.CircleArc2D) {
 
