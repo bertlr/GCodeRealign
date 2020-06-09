@@ -16,8 +16,10 @@
  */
 package org.roiderh.gcoderealign;
 
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javafx.application.Platform;
 import javax.swing.JOptionPane;
 import javax.swing.text.JTextComponent;
 import org.openide.awt.ActionID;
@@ -62,12 +64,15 @@ public final class GCodeRealignActionListener implements ActionListener {
         }
 
         /* Create and display the dialog */
+        //Platform.runLater(new Runnable() {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
                     DialogGenerateCode dialog = new DialogGenerateCode(selectedText, org.openide.windows.WindowManager.getDefault().getMainWindow(), true);
+                    dialog.initGui();
                     dialog.setLocationRelativeTo(org.openide.windows.WindowManager.getDefault().getMainWindow());
+                    
                     dialog.setVisible(true);
                     if (dialog.canceled == false) {
                         JTextComponent ed = org.netbeans.api.editor.EditorRegistry.lastFocusedComponent();

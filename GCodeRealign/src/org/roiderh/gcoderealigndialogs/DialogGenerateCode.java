@@ -40,12 +40,13 @@ import math.geom2d.conic.CircleArc2D;
  */
 public class DialogGenerateCode extends javax.swing.JDialog implements ActionListener {
 
+    
     /**
      * all Contourelements:
      */
     public LinkedList<contourelement> c_elements = null;
     gcodereader gr = new gcodereader();
-    final JFXPanel fxPanel = new JFXPanel();
+    JFXPanel fxPanel = null;
     Toolpath toolpath = null;
     PanelLinesForm lineElementsForm = new PanelLinesForm();
     Contour pl = new Contour();
@@ -69,6 +70,10 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         initComponents();
         this.g_code = _g_code;
 
+        
+
+    }
+    public void initGui(){
         //java.util.ArrayList<String> values = new java.util.ArrayList<>();
         jButtonCancel.setActionCommand("cancel");
         jButtonCancel.addActionListener(this);
@@ -123,7 +128,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
             });
 
         }
-
+        this.fxPanel = new JFXPanel();
         //pack();
         Platform.setImplicitExit(false);
         Platform.runLater(new Runnable() {
@@ -133,10 +138,11 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
             }
         });
-
+        
+        
     }
-
     private void initFX() {
+        
         this.jPanelView.setLayout(new BorderLayout());
         this.toolpath = new Toolpath();
         Scene scene = new Scene(this.toolpath);
