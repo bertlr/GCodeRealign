@@ -16,11 +16,14 @@
  */
 package org.roiderh.gcoderealigndialogs;
 
+//import java.awt.Image;
+import javafx.scene.image.Image;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.Locale;
 import javafx.event.EventHandler;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
@@ -64,9 +67,8 @@ public class Toolpath extends AnchorPane {
      * holds only the Path elements
      */
     public LinkedList<ToolpathElement> shapes = new LinkedList<>();
-    
+
     //public LinkedList<Circle> endpoints = new LinkedList<>();
-    
     public Toolpath() {
 
         //setStyle("-fx-border-color: blue;");
@@ -116,7 +118,7 @@ public class Toolpath extends AnchorPane {
     }
 
     public math.geom2d.Box2D getBoundingBox(LinkedList<CirculinearElement2D> c_el) {
-        
+
         c_el.add(new Line2D(c_el.getLast().lastPoint(), c_el.getFirst().firstPoint()));
         math.geom2d.Box2D bb = null;
 
@@ -219,7 +221,6 @@ public class Toolpath extends AnchorPane {
                 at.setY(p2.getY());
                 tpe.path.getElements().add(mt);
                 tpe.path.getElements().add(at);
-                
 
             } else {
                 LineSegment2D geo = (LineSegment2D) current_ce.curve;
@@ -244,6 +245,38 @@ public class Toolpath extends AnchorPane {
             vertex = this.translateScalePoint(vertex);
             tpe.endpoint = new Circle(vertex.getX(), vertex.getY(), 4);
             
+            /*
+            shor icons for freedom of nodes and lines
+            */
+            if (current_ce.x_free && current_ce.y_free == false) {
+                ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_x.png")));
+                image.relocate(vertex.getX() - 5, vertex.getY() - 5);
+                image.setRotate(90);
+                getChildren().add(image);
+            } else if (current_ce.y_free && current_ce.x_free == false) {
+                ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_x.png")));
+                image.relocate(vertex.getX() - 5, vertex.getY() - 5);
+                //image.setRotate(90);
+                getChildren().add(image);
+            } else if (current_ce.y_free == false && current_ce.x_free == false) {
+                ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_xy.png")));
+                image.relocate(vertex.getX() - 5, vertex.getY() - 5);
+                //image.setRotate(90);
+                getChildren().add(image);
+            }
+            if (current_ce.shape == contourelement.Shape.LINE) {
+                vertex = new Point2D((current_ce.points.getLast().x + current_ce.points.getFirst().x) / 2.0, (current_ce.points.getLast().y + current_ce.points.getFirst().y) / 2.0);
+                vertex = this.translateScalePoint(vertex);
+                LineSegment2D geo = (LineSegment2D) current_ce.curve;
+                double angle = geo.direction().angle();
+                if (current_ce.angle_free == false) {
+                    ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_angle.png")));
+                    image.relocate(vertex.getX() - 5, vertex.getY() - 5);
+                    image.setRotate(45 - angle * 180.0 / Math.PI);
+                    getChildren().add(image);
+                }
+            }
+
             if (current_ce.transition_curve != null) {
                 if (current_ce.transition_curve instanceof math.geom2d.conic.CircleArc2D) {
 
@@ -292,7 +325,7 @@ public class Toolpath extends AnchorPane {
                     NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
                     DecimalFormat df = (DecimalFormat) nf;
                     df.applyPattern("0.###");
-                    
+
                     contourelement current_ce = null;
                     for (ToolpathElement te : shapes) {
                         if (te.path.equals(event.getSource())) {
@@ -458,7 +491,6 @@ public class Toolpath extends AnchorPane {
         unhighlightElements();
         te.path.setStroke(Color.YELLOWGREEN);
         te.endpoint.setVisible(true);
-        
 
     }
 
@@ -466,13 +498,14 @@ public class Toolpath extends AnchorPane {
         for (ToolpathElement te : shapes) {
             if (te.element.equals(ce)) {
                 highlightElement(te);
-                
+
             }
         }
     }
-    public void highlightElement(int index){
-        for(int i=0;i<shapes.size();i++){
-            if(i==index){
+
+    public void highlightElement(int index) {
+        for (int i = 0; i < shapes.size(); i++) {
+            if (i == index) {
                 highlightElement(shapes.get(i));
                 return;
             }

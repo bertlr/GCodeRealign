@@ -24,13 +24,13 @@ import org.roiderh.gcodeviewer.lexer.Token;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import java.util.regex.*;
 import java.util.LinkedList;
 import org.roiderh.gcodeviewer.customfunc.IncAbs;
-import math.geom2d.Point2D;
 import math.geom2d.line.LineSegment2D;
 import java.util.Collection;
 import java.util.HashSet;
@@ -51,11 +51,18 @@ public class gcodereader {
      *
      */
     public Collection<String> messages = null;
-
+    
+    /**
+     * holds all params that removed in output gcode
+     */
+    public Collection<String> removed_params = null;
+    
     public LinkedList<contourelement> read(InputStream is) throws Exception {
         //FileInputStream is;
         //FileOutputStream os;
         this.messages = new HashSet<>();
+        this.removed_params = new ArrayList<>();
+        
         boolean G0 = false;
         boolean G1 = false;
         boolean G2 = false;
@@ -171,8 +178,9 @@ public class gcodereader {
                             case 3:
                                 G3 = true;
                                 break;
-
                         }
+                    }else{
+                        this.removed_params.add("G" + sNumber + ", linenumber: " + String.valueOf(linenumber) + ", " + line);
                     }
 
                 }
@@ -185,6 +193,11 @@ public class gcodereader {
                 }
                 if (para == null) {
                     continue;
+                }
+                switch(para.name){
+                    case "F":
+                    case "M":
+                        this.removed_params.add(t.image + ", linenumber: " + String.valueOf(linenumber) + ", " + line);
                 }
                 if (para.name.compareTo("A") == 0) {
                     CalcException newExcept = new CalcException("\"A\" is not supported in line: " + String.valueOf(linenumber));

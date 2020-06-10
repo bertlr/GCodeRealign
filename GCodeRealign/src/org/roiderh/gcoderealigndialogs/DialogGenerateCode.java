@@ -28,19 +28,20 @@ import org.roiderh.gcodeviewer.gcodereader;
 import contoursolveinterface.Contour;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Iterator;
 import java.util.Locale;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import math.geom2d.conic.CircleArc2D;
+import org.roiderh.gcoderealigndialogs.PanelContourelement;
 
 /**
  *
  * @author Herbert Roider <herbert@roider.at>
  */
-public class DialogGenerateCode extends javax.swing.JDialog implements ActionListener {
+public class DialogGenerateCode extends javax.swing.JDialog implements ActionListener, FreedomChangeListener {
 
-    
     /**
      * all Contourelements:
      */
@@ -70,10 +71,9 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         initComponents();
         this.g_code = _g_code;
 
-        
-
     }
-    public void initGui(){
+
+    public void initGui() {
         //java.util.ArrayList<String> values = new java.util.ArrayList<>();
         jButtonCancel.setActionCommand("cancel");
         jButtonCancel.addActionListener(this);
@@ -111,13 +111,12 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 public void mouseEntered(MouseEvent me) {
                     int j = lineElementsForm.panels.indexOf(me.getSource());
                     toolpath.highlightElement(j);// first Element is a point
-                    for(PanelContourelement pc : lineElementsForm.panels){
+                    for (PanelContourelement pc : lineElementsForm.panels) {
                         pc.setBorder(BorderFactory.createLineBorder(Color.black));
                     }
-                    PanelContourelement pc = (PanelContourelement)me.getSource();
+                    PanelContourelement pc = (PanelContourelement) me.getSource();
                     pc.setBorder(BorderFactory.createLineBorder(Color.GREEN));
-                    
-                    
+
                 }
 
                 @Override
@@ -126,7 +125,9 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                     //toolpath.unhighlightElements();
                 }
             });
-
+            for (PanelContourelement pc : lineElementsForm.panels) {
+                pc.addListener(this);
+            }
         }
         this.fxPanel = new JFXPanel();
         //pack();
@@ -138,11 +139,17 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
             }
         });
-        
-        
+
     }
+
+    @Override
+    public void freedomChange() {
+        lineElementsForm.getContour();
+        drawGraph();
+    }
+
     private void initFX() {
-        
+
         this.jPanelView.setLayout(new BorderLayout());
         this.toolpath = new Toolpath();
         Scene scene = new Scene(this.toolpath);
@@ -238,7 +245,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
                 }
                 //System.out.println("Solution for " + i + " Element: " + pl.solve(handle));
-                
+
             }
 
             int solution = -1;
@@ -317,6 +324,9 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         jButtonCancel = new javax.swing.JButton();
         jButtonOk = new javax.swing.JButton();
         jButtonCalculate = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextAreaMessages = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "DialogGenerateCode.title")); // NOI18N
@@ -328,11 +338,11 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         jPanelView.setLayout(jPanelViewLayout);
         jPanelViewLayout.setHorizontalGroup(
             jPanelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 660, Short.MAX_VALUE)
+            .addGap(0, 910, Short.MAX_VALUE)
         );
         jPanelViewLayout.setVerticalGroup(
             jPanelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 617, Short.MAX_VALUE)
+            .addGap(0, 682, Short.MAX_VALUE)
         );
 
         jSplitPaneViewEditor.setLeftComponent(jPanelView);
@@ -343,33 +353,49 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
         org.openide.awt.Mnemonics.setLocalizedText(jButtonCalculate, org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "DialogGenerateCode.jButtonCalculate.text")); // NOI18N
 
+        jTextAreaMessages.setColumns(20);
+        jTextAreaMessages.setRows(5);
+        jScrollPane1.setViewportView(jTextAreaMessages);
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "DialogGenerateCode.jLabel1.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonCalculate)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonCancel)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonOk)
-                .addGap(63, 63, 63))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSplitPaneViewEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 1094, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButtonCalculate)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonCancel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonOk)
+                        .addGap(67, 67, 67))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSplitPaneViewEditor, javax.swing.GroupLayout.PREFERRED_SIZE, 1057, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPaneViewEditor)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSplitPaneViewEditor)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1)))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonCalculate)
                     .addComponent(jButtonCancel)
-                    .addComponent(jButtonOk)
-                    .addComponent(jButtonCalculate))
+                    .addComponent(jButtonOk))
                 .addContainerGap())
         );
 
@@ -431,10 +457,16 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
             if (c_elements.isEmpty()) {
                 return;
             }
+            String removed_params = "";
+            Iterator<String> it = gr.removed_params.iterator();
+            while (it.hasNext()) {
+                removed_params += it.next();
+            }
+            this.jTextAreaMessages.setText(removed_params);
+
             gr.calc_contour(c_elements);
 
             //this.cleanup_contour(c_elements);
-
         } catch (Exception e1) {
             System.out.println("Error " + e1.toString());
             JOptionPane.showMessageDialog(null, "Error: " + e1.toString());
@@ -537,7 +569,10 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
     private javax.swing.JButton jButtonCalculate;
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonOk;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanelView;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPaneViewEditor;
+    private javax.swing.JTextArea jTextAreaMessages;
     // End of variables declaration//GEN-END:variables
 }

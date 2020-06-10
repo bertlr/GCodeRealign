@@ -21,8 +21,12 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -38,10 +42,26 @@ import org.roiderh.gcodeviewer.contourelement;
  * @author Herbert Roider <herbert@roider.at>
  * a Form for a single contourelement
  */
-public class PanelContourelement extends JPanel {
+public class PanelContourelement extends JPanel implements ActionListener {
+
+    private List<FreedomChangeListener> listeners = new ArrayList<>();
 
     public contourelement current_ce = null;
     public contourelement prev_ce = null;
+
+    public void addListener(FreedomChangeListener toAdd) {
+        listeners.add(toAdd);
+    }
+    /**
+     * called when freedom checkboxes selected or deselected
+     * @param e 
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        for(FreedomChangeListener fchl : this.listeners){
+            fchl.freedomChange();
+        }
+    }
 
     public PanelContourelement(contourelement _current_ce, contourelement _prev_ce) {
         super();
@@ -69,6 +89,7 @@ public class PanelContourelement extends JPanel {
         this.add(y_field, c);
         c.gridx = 2;
         JCheckBox y_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+        y_free_field.addActionListener(this);
         //y_free_field.addFocusListener(this);
         this.add(y_free_field, c);
 
@@ -82,7 +103,7 @@ public class PanelContourelement extends JPanel {
         this.add(x_field, c);
         c.gridx = 2;
         JCheckBox x_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
-
+        x_free_field.addActionListener(this);
         this.add(x_free_field, c);
 
         if (prev_ce != null) {
@@ -142,7 +163,7 @@ public class PanelContourelement extends JPanel {
                 this.add(angle_field, c);
                 c.gridx = 2;
                 JCheckBox angle_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
-
+                angle_free_field.addActionListener(this);
                 this.add(angle_free_field, c);
 
                 c.gridy++;
@@ -311,6 +332,5 @@ public class PanelContourelement extends JPanel {
 
         return ce;
     }
-
 
 }
