@@ -30,6 +30,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -244,10 +245,10 @@ public class Toolpath extends AnchorPane {
             Point2D vertex = new Point2D(current_ce.points.getLast().x, current_ce.points.getLast().y);
             vertex = this.translateScalePoint(vertex);
             tpe.endpoint = new Circle(vertex.getX(), vertex.getY(), 4);
-            
+
             /*
-            shor icons for freedom of nodes and lines
-            */
+            show icons for freedom of nodes
+             */
             if (current_ce.x_free && current_ce.y_free == false) {
                 ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_x.png")));
                 image.relocate(vertex.getX() - 5, vertex.getY() - 5);
@@ -275,6 +276,53 @@ public class Toolpath extends AnchorPane {
                     image.setRotate(45 - angle * 180.0 / Math.PI);
                     getChildren().add(image);
                 }
+            } else {
+                // circle:
+                // Draw the help lines:
+                CircleArc2D geo = (CircleArc2D) current_ce.curve;
+                Point2D midpoint = geo.supportingCircle().center();
+                Point2D p1 = geo.firstPoint();
+                Point2D p2 = geo.lastPoint();
+                midpoint = this.translateScalePoint(midpoint);
+                p1 = this.translateScalePoint(p1);
+                p2 = this.translateScalePoint(p2);
+                String style = "-fx-stroke-dash-array: 1 3 ; -fx-stroke: blue; ";
+                if (current_ce.radius_free == false) {
+                    style = "-fx-stroke: blue;";
+                }
+                Line line1 = new Line();
+                Line line2 = new Line();
+                line1.setStartX(p1.getX());
+                line1.setStartY(p1.getY());
+                line1.setEndX(midpoint.getX());
+                line1.setEndY(midpoint.getY());
+                line1.setStyle(style);
+                getChildren().add(line1);
+                line2.setStartX(p2.getX());
+                line2.setStartY(p2.getY());
+                line2.setEndX(midpoint.getX());
+                line2.setEndY(midpoint.getY());
+                line2.setStyle(style);
+                getChildren().add(line2);
+                
+                if (current_ce.startangle_free == false) {
+                    vertex = new Point2D((p1.getX() + midpoint.getX()) / 2.0, (p1.getY() + midpoint.getY()) / 2.0);
+                    //vertex = this.translateScalePoint(vertex);             
+                    ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_angle.png")));
+                    image.relocate(vertex.getX() - 5, vertex.getY() - 5);
+                    //image.setRotate(45 - angle * 180.0 / Math.PI);
+                    getChildren().add(image);
+                }
+                if (current_ce.endangle_free == false) {
+                    vertex = new Point2D((p2.getX() + midpoint.getX()) / 2.0, (p2.getY() + midpoint.getY()) / 2.0);
+                    //vertex = this.translateScalePoint(vertex);             
+                    ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_angle.png")));
+                    image.relocate(vertex.getX() - 5, vertex.getY() - 5);
+                    //image.setRotate(45 - angle * 180.0 / Math.PI);
+                    getChildren().add(image);
+                }
+                
+
             }
 
             if (current_ce.transition_curve != null) {

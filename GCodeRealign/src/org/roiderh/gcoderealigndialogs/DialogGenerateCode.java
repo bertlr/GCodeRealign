@@ -18,7 +18,6 @@ package org.roiderh.gcoderealigndialogs;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -34,13 +33,12 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import math.geom2d.conic.CircleArc2D;
-import org.roiderh.gcoderealigndialogs.PanelContourelement;
 
 /**
  *
  * @author Herbert Roider <herbert@roider.at>
  */
-public class DialogGenerateCode extends javax.swing.JDialog implements ActionListener, FreedomChangeListener {
+public class DialogGenerateCode extends javax.swing.JDialog implements ActionListener, FreedomChangeListener, ValueChangeListener {
 
     /**
      * all Contourelements:
@@ -52,6 +50,14 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
     PanelLinesForm lineElementsForm = new PanelLinesForm();
     Contour pl = new Contour();
     public boolean canceled = true;
+    /**
+     * if true the test calculation will be performed
+     */
+    boolean test_calc = true;
+    /**
+     * timer for the test calculation
+     */
+    private Timer t = new Timer(1000, this);
     /**
      * Field with the generated g-Code:
      */
@@ -70,6 +76,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         super(parent, modal);
         initComponents();
         this.g_code = _g_code;
+        t.start();
 
     }
 
@@ -127,6 +134,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
             });
             for (PanelContourelement pc : lineElementsForm.panels) {
                 pc.addListener(this);
+                pc.addValueChangeListener(this);
             }
         }
         this.fxPanel = new JFXPanel();
@@ -144,8 +152,14 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
     @Override
     public void freedomChange() {
-        lineElementsForm.getContour();
-        drawGraph();
+        //System.out.println("freedomChange");
+        test_calc = true;
+    }
+
+    @Override
+    public void valueChange() {
+        //System.out.println("valueChange");
+        test_calc = true;
     }
 
     private void initFX() {
@@ -186,6 +200,17 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == t) {
+            if(this.test_calc == false){
+                return;
+            }
+            this.test_calc = false;
+            LinkedList<contourelement> elements = null;
+            elements = lineElementsForm.getContour();
+            this.test_calc_contour(elements);
+            drawGraph();
+            
+        }
         if ("calculate".equals(e.getActionCommand())) {
 
             lineElementsForm.getContour();
@@ -308,6 +333,92 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
             this.setVisible(false);
         }
 
+    }
+    /**
+     * perform a test calculation and colores the forms for the nodes
+     * @param c_elements
+     * @return integer 0 if ok otherwise <>0
+     */
+    public int test_calc_contour(LinkedList<contourelement> c_elements) {
+        
+        Contour c = new Contour();
+        int handle = c.create();
+        int solution = -1;
+        System.out.println("handle=" + String.valueOf(handle));
+
+        for (int i = 0; i < c_elements.size(); i++) {
+            contourelement ce = c_elements.get(i);
+            if (i == 0) {
+                //System.out.println("Handle:" + handle + ", x" + ce.points.getLast().x + ", xfree=" + contourelement.BooltoInt(ce.x_free) + ", y" + ce.points.getLast().y + ", yfree=" + contourelement.BooltoInt(ce.y_free));
+                c.addPoint(handle, ce.points.getLast().x, contourelement.BooltoInt(ce.x_free), ce.points.getLast().y, contourelement.BooltoInt(ce.y_free));
+            } else if (ce.shape == contourelement.Shape.LINE) {
+//                    System.out.println("Handle:" + handle + ", x" + ce.points.getLast().x + ", xfree=" + contourelement.BooltoInt(ce.x_free) + ", y" + ce.points.getLast().y + ", yfree=" + contourelement.BooltoInt(ce.y_free)
+//                            + ", angle" + ce.angle + ", anlefree" + contourelement.BooltoInt(ce.angle_free));
+                c.addLine(handle, ce.points.getLast().x, contourelement.BooltoInt(ce.x_free),
+                        ce.points.getLast().y, contourelement.BooltoInt(ce.y_free),
+                        ce.angle, contourelement.BooltoInt(ce.angle_free),
+                        ce.tangent);
+            } else if (ce.shape == contourelement.Shape.ARC) {
+                CircleArc2D geo = (CircleArc2D) ce.curve;
+                double startAngle;
+                double endAngle;
+                if (ce.ccw == true) {
+                    startAngle = 0.5 * Math.PI + geo.getStartAngle();
+                    endAngle = 0.5 * Math.PI + (geo.getStartAngle() + geo.getAngleExtent());
+                } else {
+                    startAngle = -0.5 * Math.PI + geo.getStartAngle();
+                    endAngle = -0.5 * Math.PI + (geo.getStartAngle() + geo.getAngleExtent());
+                }
+                if (startAngle > 2.0 * Math.PI) {
+                    startAngle -= 2.0 * Math.PI;
+                }
+                if (startAngle < -2.0 * Math.PI) {
+                    startAngle += 2.0 * Math.PI;
+                }
+                if (endAngle > 2.0 * Math.PI) {
+                    endAngle -= 2.0 * Math.PI;
+                }
+                if (endAngle < -2.0 * Math.PI) {
+                    endAngle += 2.0 * Math.PI;
+                }
+
+//                    System.out.println("Handle:" + handle + ", x" + ce.points.getLast().x + ", xfree=" + contourelement.BooltoInt(ce.x_free) + ", centery" + ce.points.getLast().y + ", centeryfree=" + contourelement.BooltoInt(ce.y_center_free)
+//                            + ", center_x" + geo.supportingCircle().center().x() + ", xfree=" + contourelement.BooltoInt(ce.x_center_free) + ", y" + geo.supportingCircle().center().y() + ", yfree=" + contourelement.BooltoInt(ce.x_center_free)
+//                            + ", rad:" + ce.radius + ", radfree:" + contourelement.BooltoInt(ce.radius_free)
+//                            + ", startangle" + ce.startangle + ", startanlefree" + contourelement.BooltoInt(ce.startangle_free)
+//                            + ", endangle" + ce.endangle + ", endanlefree" + contourelement.BooltoInt(ce.endangle_free)
+//                    );
+                c.addArc(handle, ce.points.getLast().x, contourelement.BooltoInt(ce.x_free),
+                        ce.points.getLast().y, contourelement.BooltoInt(ce.y_free),
+                        geo.supportingCircle().center().x(), contourelement.BooltoInt(true),
+                        geo.supportingCircle().center().y(), contourelement.BooltoInt(true),
+                        ce.radius, contourelement.BooltoInt(ce.radius_free),
+                        ce.startangle, contourelement.BooltoInt(ce.startangle_free),
+                        ce.endangle, contourelement.BooltoInt(ce.endangle_free),
+                        ce.tangent);
+
+            }
+            solution = c.solve(handle);
+            System.out.println("Solution for " + i + " Element: " + solution);
+            if(solution == 0){
+                lineElementsForm.panels.get(i).setBackground(Color.decode("#c1f6b9"));
+                
+            }else{
+                lineElementsForm.panels.get(i).setBackground(Color.decode("#febfc4"));
+            }
+
+        }
+
+        solution = c.solve(handle);
+
+        if (solution != 0) {
+            System.out.println("keine Lösung gefunden!!!");
+            //JOptionPane.showMessageDialog(null, "Error: no solution found");
+            return solution;
+        }
+        System.out.println("Lösung gefunden!!!");
+        //this.drawGraph();
+        return solution;
     }
 
     /**

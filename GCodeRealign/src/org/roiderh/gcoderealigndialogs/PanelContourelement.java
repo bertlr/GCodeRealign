@@ -23,6 +23,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -42,9 +44,10 @@ import org.roiderh.gcodeviewer.contourelement;
  * @author Herbert Roider <herbert@roider.at>
  * a Form for a single contourelement
  */
-public class PanelContourelement extends JPanel implements ActionListener {
+public class PanelContourelement extends JPanel implements ActionListener, FocusListener {
 
     private List<FreedomChangeListener> listeners = new ArrayList<>();
+    private List<ValueChangeListener> valueChangeListeners = new ArrayList<>();
 
     public contourelement current_ce = null;
     public contourelement prev_ce = null;
@@ -52,15 +55,33 @@ public class PanelContourelement extends JPanel implements ActionListener {
     public void addListener(FreedomChangeListener toAdd) {
         listeners.add(toAdd);
     }
+
+    public void addValueChangeListener(ValueChangeListener toAdd){
+        valueChangeListeners.add(toAdd);
+    }
     /**
      * called when freedom checkboxes selected or deselected
-     * @param e 
+     *
+     * @param e
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        for(FreedomChangeListener fchl : this.listeners){
+        System.out.println("action: " + e.getSource().getClass());
+        for (FreedomChangeListener fchl : this.listeners) {
             fchl.freedomChange();
         }
+    }
+    @Override
+    public void focusGained(FocusEvent e) {
+        //System.out.println("Focus gained");
+    }
+    @Override
+    public void focusLost(FocusEvent e) {
+        System.out.println("Focus lost");
+        for(ValueChangeListener vcl : this.valueChangeListeners){
+            vcl.valueChange();
+        }
+        
     }
 
     public PanelContourelement(contourelement _current_ce, contourelement _prev_ce) {
@@ -86,6 +107,7 @@ public class PanelContourelement extends JPanel implements ActionListener {
         //y_field.addFocusListener(this);
         y_field.setPreferredSize(new Dimension(80, 16));
         y_field.setMinimumSize(new Dimension(60, 16));
+        y_field.addFocusListener(this);
         this.add(y_field, c);
         c.gridx = 2;
         JCheckBox y_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
@@ -99,6 +121,7 @@ public class PanelContourelement extends JPanel implements ActionListener {
         JTextField x_field = new JTextField();
         x_field.setPreferredSize(new Dimension(80, 16));
         x_field.setMinimumSize(new Dimension(60, 16));
+        x_field.addFocusListener(this);
         c.gridx = 1;
         this.add(x_field, c);
         c.gridx = 2;
@@ -115,9 +138,11 @@ public class PanelContourelement extends JPanel implements ActionListener {
                 JTextField startangle_field = new JTextField();
                 startangle_field.setPreferredSize(new Dimension(80, 16));
                 startangle_field.setMinimumSize(new Dimension(60, 16));
+                startangle_field.addFocusListener(this);
                 this.add(startangle_field, c);
                 c.gridx = 2;
                 JCheckBox startangle_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+                startangle_free_field.addActionListener(this);
                 this.add(startangle_free_field, c);
 
                 c.gridy++;
@@ -126,10 +151,12 @@ public class PanelContourelement extends JPanel implements ActionListener {
                 JTextField endangle_field = new JTextField();
                 endangle_field.setPreferredSize(new Dimension(80, 16));
                 endangle_field.setMinimumSize(new Dimension(60, 16));
+                endangle_field.addFocusListener(this);
                 c.gridx = 1;
                 this.add(endangle_field, c);
                 c.gridx = 2;
                 JCheckBox endangle_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+                endangle_free_field.addActionListener(this);
                 this.add(endangle_free_field, c);
 
                 c.gridy++;
@@ -137,11 +164,13 @@ public class PanelContourelement extends JPanel implements ActionListener {
                 this.add(new JLabel(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jLabelRadius.text")), c);
                 JTextField radius_field = new JTextField();
                 radius_field.setPreferredSize(new Dimension(80, 16));
-                radius_field.setMinimumSize(new Dimension(60, 16));
+                radius_field.setMinimumSize(new Dimension(60, 16));               
+                radius_field.addFocusListener(this);
                 c.gridx = 1;
                 this.add(radius_field, c);
                 c.gridx = 2;
                 JCheckBox radius_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+                radius_free_field.addActionListener(this);
                 this.add(radius_free_field, c);
 
                 c.gridy++;
@@ -149,6 +178,7 @@ public class PanelContourelement extends JPanel implements ActionListener {
                 this.add(new JLabel(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jLabelTangent.text")), c);
                 c.gridx = 1;
                 JCheckBox tangent_field = new JCheckBox();
+                tangent_field.addActionListener(this);
                 this.add(tangent_field, c);
 
             } else if (current_ce.shape == contourelement.Shape.LINE) {
@@ -160,6 +190,7 @@ public class PanelContourelement extends JPanel implements ActionListener {
                 JTextField angle_field = new JTextField();
                 angle_field.setPreferredSize(new Dimension(80, 16));
                 angle_field.setMinimumSize(new Dimension(60, 16));
+                angle_field.addFocusListener(this);
                 this.add(angle_field, c);
                 c.gridx = 2;
                 JCheckBox angle_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
@@ -171,8 +202,10 @@ public class PanelContourelement extends JPanel implements ActionListener {
                 this.add(new JLabel(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jLabelTangent.text")), c);
                 c.gridx = 1;
                 JCheckBox tangent_field = new JCheckBox();
+                tangent_field.addActionListener(this);
                 this.add(tangent_field, c);
-
+                
+                // ortho lines
                 switch (current_ce.axis_movement) {
                     case 1:
                         angle_field.setEditable(false);
