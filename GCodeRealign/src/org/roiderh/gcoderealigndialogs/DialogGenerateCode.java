@@ -48,12 +48,15 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
     JFXPanel fxPanel = null;
     Toolpath toolpath = null;
     PanelLinesForm lineElementsForm = new PanelLinesForm();
+    /**
+     * encapsulate the geometry processor
+     */
     Contour pl = new Contour();
     public boolean canceled = true;
     /**
      * if true the test calculation will be performed
      */
-    boolean test_calc = true;
+    boolean test_calc = false;
     /**
      * timer for the test calculation
      */
@@ -113,7 +116,9 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 public void mouseClicked(MouseEvent me) {
 
                 }
-
+                /**
+                 * draw a border over the current panel for a contour element
+                 */
                 @Override
                 public void mouseEntered(MouseEvent me) {
                     int j = lineElementsForm.panels.indexOf(me.getSource());
@@ -144,18 +149,23 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
             @Override
             public void run() {
                 initFX();
+                test_calc = true;
 
             }
         });
 
     }
-
+    /**
+     * called if a checkbox for freedom is changed
+     */
     @Override
     public void freedomChange() {
         //System.out.println("freedomChange");
         test_calc = true;
     }
-
+    /**
+     * called if the focus of textfield is lost
+     */
     @Override
     public void valueChange() {
         //System.out.println("valueChange");
@@ -200,17 +210,21 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        // timer event
         if (e.getSource() == t) {
             if(this.test_calc == false){
                 return;
-            }
-            this.test_calc = false;
+            }      
             LinkedList<contourelement> elements = null;
             elements = lineElementsForm.getContour();
+            if(elements == null){
+                return;
+            }
             this.test_calc_contour(elements);
             drawGraph();
-            
+            this.test_calc = false;
         }
+        // Button "calculate" pressed
         if ("calculate".equals(e.getActionCommand())) {
 
             lineElementsForm.getContour();
@@ -318,8 +332,6 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
             }
 
-            //System.out.println(System.getProperty("os.arch").toLowerCase(Locale.ENGLISH)); // amd64
-            //System.out.println(System.getProperty("os.name").toLowerCase(Locale.ENGLISH)); // linux
             gr.calc_contour(c_elements);
             lineElementsForm.fillForm();
             this.drawGraph();
@@ -412,11 +424,11 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         solution = c.solve(handle);
 
         if (solution != 0) {
-            System.out.println("keine Lösung gefunden!!!");
+            System.out.println("no solution");
             //JOptionPane.showMessageDialog(null, "Error: no solution found");
             return solution;
         }
-        System.out.println("Lösung gefunden!!!");
+        System.out.println("solution found");
         //this.drawGraph();
         return solution;
     }

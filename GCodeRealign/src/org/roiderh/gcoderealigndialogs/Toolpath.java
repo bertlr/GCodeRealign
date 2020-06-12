@@ -16,7 +16,6 @@
  */
 package org.roiderh.gcoderealigndialogs;
 
-//import java.awt.Image;
 import javafx.scene.image.Image;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -45,7 +44,7 @@ import org.roiderh.gcodeviewer.contourelement;
 import org.roiderh.gcodeviewer.point;
 
 /**
- *
+ * widget contains the toolpath
  * @author Herbert Roider <herbert@roider.at>
  */
 public class Toolpath extends AnchorPane {
@@ -60,6 +59,7 @@ public class Toolpath extends AnchorPane {
     public double y_trans = 0.0;
     private double middle_x = 0.0;
     private double middle_y = 0.0;
+    private boolean recalcTransScale = true;
     /**
      * The contour elements to display
      */
@@ -69,7 +69,7 @@ public class Toolpath extends AnchorPane {
      */
     public LinkedList<ToolpathElement> shapes = new LinkedList<>();
 
-    //public LinkedList<Circle> endpoints = new LinkedList<>();
+    
     public Toolpath() {
 
         //setStyle("-fx-border-color: blue;");
@@ -247,7 +247,7 @@ public class Toolpath extends AnchorPane {
             tpe.endpoint = new Circle(vertex.getX(), vertex.getY(), 4);
 
             /*
-            show icons for freedom of nodes
+            draw icons and helplines for degree of freedom for nodes
              */
             if (current_ce.x_free && current_ce.y_free == false) {
                 ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_x.png")));
@@ -266,13 +266,13 @@ public class Toolpath extends AnchorPane {
                 getChildren().add(image);
             }
             if (current_ce.shape == contourelement.Shape.LINE) {
-                vertex = new Point2D((current_ce.points.getLast().x + current_ce.points.getFirst().x) / 2.0, (current_ce.points.getLast().y + current_ce.points.getFirst().y) / 2.0);
-                vertex = this.translateScalePoint(vertex);
+                Point2D midpoint = new Point2D((current_ce.points.getLast().x + current_ce.points.getFirst().x) / 2.0, (current_ce.points.getLast().y + current_ce.points.getFirst().y) / 2.0);
+                midpoint = this.translateScalePoint(midpoint);
                 LineSegment2D geo = (LineSegment2D) current_ce.curve;
                 double angle = geo.direction().angle();
                 if (current_ce.angle_free == false) {
                     ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_angle.png")));
-                    image.relocate(vertex.getX() - 5, vertex.getY() - 5);
+                    image.relocate(midpoint.getX() - 5, midpoint.getY() - 5);
                     image.setRotate(45 - angle * 180.0 / Math.PI);
                     getChildren().add(image);
                 }
@@ -324,7 +324,9 @@ public class Toolpath extends AnchorPane {
                 
 
             }
-
+            /*
+            draw transition element like chamfer or round
+            */
             if (current_ce.transition_curve != null) {
                 if (current_ce.transition_curve instanceof math.geom2d.conic.CircleArc2D) {
 
@@ -529,7 +531,10 @@ public class Toolpath extends AnchorPane {
         this.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         c_elements = elements;
-        this.calcTransScale(elements);
+        if(this.recalcTransScale){
+            this.calcTransScale(elements);
+            this.recalcTransScale = false;
+        }
 
         this.draw();
 

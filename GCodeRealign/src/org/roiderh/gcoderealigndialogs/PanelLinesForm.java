@@ -23,7 +23,7 @@ import org.roiderh.gcodeviewer.contourelement;
 
 
 /**
- *
+ * the panel with the contour elements like lines and arcs
  * @author Herbert Roider <herbert@roider.at>
  */
 public class PanelLinesForm extends JPanel {
@@ -34,6 +34,7 @@ public class PanelLinesForm extends JPanel {
     PanelLinesForm() {
         super();
         panels = new LinkedList<>();
+        contour = new LinkedList<>();
 
     }
 
@@ -65,7 +66,7 @@ public class PanelLinesForm extends JPanel {
     }
 
     public LinkedList<contourelement> getContour() {
-
+       
         for (int i = 0; i < contour.size(); i++) {
             contourelement ce = contour.get(i);
 
