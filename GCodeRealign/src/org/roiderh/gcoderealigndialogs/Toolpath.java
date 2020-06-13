@@ -257,12 +257,10 @@ public class Toolpath extends AnchorPane {
             } else if (current_ce.y_free && current_ce.x_free == false) {
                 ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_x.png")));
                 image.relocate(vertex.getX() - 5, vertex.getY() - 5);
-                //image.setRotate(90);
                 getChildren().add(image);
             } else if (current_ce.y_free == false && current_ce.x_free == false) {
                 ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_xy.png")));
                 image.relocate(vertex.getX() - 5, vertex.getY() - 5);
-                //image.setRotate(90);
                 getChildren().add(image);
             }
             if (current_ce.shape == contourelement.Shape.LINE) {
@@ -298,7 +296,7 @@ public class Toolpath extends AnchorPane {
                 line2 = this.getLineFromGeom(line2, l2, style);
                 getChildren().add(line1);
                 getChildren().add(line2);
-                
+                // draw icons for degree of freedom
                 if (current_ce.startangle_free == false) {
                     vertex = new Point2D((p1.getX() + midpoint.getX()) / 2.0, (p1.getY() + midpoint.getY()) / 2.0);
                     ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_angle.png")));
@@ -316,7 +314,6 @@ public class Toolpath extends AnchorPane {
                     getChildren().add(image);
                 }
                 
-
             }
             /*
             draw transition element like chamfer or round
