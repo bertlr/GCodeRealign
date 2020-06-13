@@ -290,35 +290,29 @@ public class Toolpath extends AnchorPane {
                 if (current_ce.radius_free == false) {
                     style = "-fx-stroke: blue;";
                 }
+                Line2D l1 = new Line2D(p1, midpoint);
+                Line2D l2 = new Line2D(midpoint, p2);
                 Line line1 = new Line();
                 Line line2 = new Line();
-                line1.setStartX(p1.getX());
-                line1.setStartY(p1.getY());
-                line1.setEndX(midpoint.getX());
-                line1.setEndY(midpoint.getY());
-                line1.setStyle(style);
+                line1 = this.getLineFromGeom(line1, l1, style);
+                line2 = this.getLineFromGeom(line2, l2, style);
                 getChildren().add(line1);
-                line2.setStartX(p2.getX());
-                line2.setStartY(p2.getY());
-                line2.setEndX(midpoint.getX());
-                line2.setEndY(midpoint.getY());
-                line2.setStyle(style);
                 getChildren().add(line2);
                 
                 if (current_ce.startangle_free == false) {
                     vertex = new Point2D((p1.getX() + midpoint.getX()) / 2.0, (p1.getY() + midpoint.getY()) / 2.0);
-                    //vertex = this.translateScalePoint(vertex);             
                     ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_angle.png")));
                     image.relocate(vertex.getX() - 5, vertex.getY() - 5);
-                    //image.setRotate(45 - angle * 180.0 / Math.PI);
+                    double angle = l1.direction().angle() * 180.0 / Math.PI;
+                    image.setRotate(angle + 45.0);
                     getChildren().add(image);
                 }
                 if (current_ce.endangle_free == false) {
                     vertex = new Point2D((p2.getX() + midpoint.getX()) / 2.0, (p2.getY() + midpoint.getY()) / 2.0);
-                    //vertex = this.translateScalePoint(vertex);             
                     ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("fix_angle.png")));
                     image.relocate(vertex.getX() - 5, vertex.getY() - 5);
-                    //image.setRotate(45 - angle * 180.0 / Math.PI);
+                    double angle = l2.direction().angle() * 180.0 / Math.PI;
+                    image.setRotate(angle + 45.0);
                     getChildren().add(image);
                 }
                 
@@ -573,6 +567,16 @@ public class Toolpath extends AnchorPane {
 
         }
 
+    }
+    private Line getLineFromGeom(Line line1, Line2D l, String style){
+        //Line line1 = new Line();       
+        line1.setStartX(l.p1.getX());
+        line1.setStartY(l.p1.getY());
+        line1.setEndX(l.p2.getX());
+        line1.setEndY(l.p2.getY());
+        line1.setStyle(style);
+        return line1;
+        
     }
 
 }
