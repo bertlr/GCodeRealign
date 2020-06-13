@@ -45,6 +45,7 @@ import org.roiderh.gcodeviewer.point;
 
 /**
  * widget contains the toolpath
+ *
  * @author Herbert Roider <herbert@roider.at>
  */
 public class Toolpath extends AnchorPane {
@@ -69,7 +70,6 @@ public class Toolpath extends AnchorPane {
      */
     public LinkedList<ToolpathElement> shapes = new LinkedList<>();
 
-    
     public Toolpath() {
 
         //setStyle("-fx-border-color: blue;");
@@ -263,6 +263,20 @@ public class Toolpath extends AnchorPane {
                 image.relocate(vertex.getX() - 5, vertex.getY() - 5);
                 getChildren().add(image);
             }
+            if (current_ce.tangent) {
+                //Line2D tangent = new Line2D(new Point2D(current_ce.points.getLast().x, current_ce.points.getLast().y), new Point2D(current_ce.points.getLast().x + 20.0, current_ce.points.getLast().y ));
+                ImageView image = new ImageView(new Image(Toolpath.class.getResourceAsStream("tangent.png")));
+                image.relocate(vertex.getX() - 40, vertex.getY() - 1);
+                double angle = 0.0;
+                if (current_ce.shape == contourelement.Shape.LINE) {
+                    angle =  current_ce.angle * 180.0 / Math.PI;
+                } else {
+                    angle = current_ce.endangle * 180.0 / Math.PI;
+                }
+                image.setRotate(-angle);
+                getChildren().add(image);
+            }
+
             if (current_ce.shape == contourelement.Shape.LINE) {
                 Point2D midpoint = new Point2D((current_ce.points.getLast().x + current_ce.points.getFirst().x) / 2.0, (current_ce.points.getLast().y + current_ce.points.getFirst().y) / 2.0);
                 midpoint = this.translateScalePoint(midpoint);
@@ -313,11 +327,10 @@ public class Toolpath extends AnchorPane {
                     image.setRotate(angle + 45.0);
                     getChildren().add(image);
                 }
-                
             }
             /*
             draw transition element like chamfer or round
-            */
+             */
             if (current_ce.transition_curve != null) {
                 if (current_ce.transition_curve instanceof math.geom2d.conic.CircleArc2D) {
 
@@ -522,7 +535,7 @@ public class Toolpath extends AnchorPane {
         this.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         c_elements = elements;
-        if(this.recalcTransScale){
+        if (this.recalcTransScale) {
             this.calcTransScale(elements);
             this.recalcTransScale = false;
         }
@@ -565,7 +578,8 @@ public class Toolpath extends AnchorPane {
         }
 
     }
-    private Line getLineFromGeom(Line line1, Line2D l, String style){
+
+    private Line getLineFromGeom(Line line1, Line2D l, String style) {
         //Line line1 = new Line();       
         line1.setStartX(l.p1.getX());
         line1.setStartY(l.p1.getY());
@@ -573,7 +587,7 @@ public class Toolpath extends AnchorPane {
         line1.setEndY(l.p2.getY());
         line1.setStyle(style);
         return line1;
-        
+
     }
 
 }
