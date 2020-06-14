@@ -72,10 +72,6 @@
                 <binary-origin>release/modules/ext/javafx-swt.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/Jama-1.0.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/Jama-1.0.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/javafx.graphics.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/javafx.graphics.jar</binary-origin>
             </class-path-extension>
