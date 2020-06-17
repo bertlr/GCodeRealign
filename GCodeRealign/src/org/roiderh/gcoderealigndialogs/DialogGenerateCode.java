@@ -27,12 +27,21 @@ import org.roiderh.gcodeviewer.gcodereader;
 import contoursolveinterface.Contour;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
+import javax.swing.text.JTextComponent;
 import math.geom2d.conic.CircleArc2D;
+import org.roiderh.gcodeviewer.lexer.Gcodereader;
+import org.roiderh.gcodeviewer.lexer.GcodereaderConstants;
+import org.roiderh.gcodeviewer.lexer.Token;
+import org.roiderh.gcodeviewer.parameter;
 
 /**
  *
@@ -62,9 +71,10 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
      */
     private Timer t = new Timer(1000, this);
     /**
-     * Field with the generated g-Code:
+     * @deprecated Field with the generated g-Code:
      */
     public String g_code;
+    //public ArrayList<String> g_code_lines;
 
     /**
      * Creates new form DialogBackTranslationFunction
@@ -72,13 +82,6 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
     public DialogGenerateCode(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-
-    }
-
-    public DialogGenerateCode(String _g_code, java.awt.Frame parent, boolean modal) throws Exception {
-        super(parent, modal);
-        initComponents();
-        this.g_code = _g_code;
         t.start();
 
     }
@@ -116,6 +119,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 public void mouseClicked(MouseEvent me) {
 
                 }
+
                 /**
                  * draw a border over the current panel for a contour element
                  */
@@ -155,6 +159,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         });
 
     }
+
     /**
      * called if a checkbox for freedom is changed
      */
@@ -163,6 +168,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         //System.out.println("freedomChange");
         test_calc = true;
     }
+
     /**
      * called if the focus of textfield is lost
      */
@@ -212,12 +218,12 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
     public void actionPerformed(ActionEvent e) {
         // timer event
         if (e.getSource() == t) {
-            if(this.test_calc == false){
+            if (this.test_calc == false) {
                 return;
-            }      
+            }
             LinkedList<contourelement> elements = null;
             elements = lineElementsForm.getContour();
-            if(elements == null){
+            if (elements == null) {
                 return;
             }
             this.test_calc_contour(elements);
@@ -339,20 +345,22 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         } else if ("cancel".equals(e.getActionCommand())) {
             this.setVisible(false);
         } else if ("ok".equals(e.getActionCommand())) {
-
-            this.g_code = this.createGCode();
+            this.replace_values();
+            //this.g_code = this.createGCode();
             this.canceled = false;
             this.setVisible(false);
         }
 
     }
+
     /**
      * perform a test calculation and colores the forms for the nodes
+     *
      * @param c_elements
      * @return integer 0 if ok otherwise <>0
      */
     public int test_calc_contour(LinkedList<contourelement> c_elements) {
-        
+
         Contour c = new Contour();
         int handle = c.create();
         int solution = -1;
@@ -412,10 +420,10 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
             }
             solution = c.solve(handle);
             System.out.println("Solution for " + i + " Element: " + solution);
-            if(solution == 0){
+            if (solution == 0) {
                 lineElementsForm.panels.get(i).setBackground(Color.decode("#c1f6b9"));
-                
-            }else{
+
+            } else {
                 lineElementsForm.panels.get(i).setBackground(Color.decode("#febfc4"));
             }
 
@@ -573,10 +581,34 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
      */
     public void readContour() {
         //java.util.ArrayList<String> args = new java.util.ArrayList<>();
+        JTextComponent ed = org.netbeans.api.editor.EditorRegistry.lastFocusedComponent();
+        if (ed == null) {
+            JOptionPane.showMessageDialog(null, "Error: no open editor");
+            return;
+        }
+
+        int start_offset = ed.getSelectionStart();
+        int end_offset = ed.getSelectionEnd();
+        Document doc = ed.getDocument();
+        Element root = doc.getDefaultRootElement();
+        int start_index = root.getElementIndex(start_offset);
+        int end_index = root.getElementIndex(end_offset);
+        int lineIndex = 0;
+        //int elCount = root.getElementCount();
+        //int count = 0;
+        ArrayList<String> lines = new ArrayList<>();
         try {
 
-            InputStream is = new ByteArrayInputStream(this.g_code.getBytes());
-            c_elements = gr.read(is);
+            for (lineIndex = start_index; lineIndex <= end_index; lineIndex++) {
+                Element contentEl = root.getElement(lineIndex);
+                int start = contentEl.getStartOffset();
+                int end = contentEl.getEndOffset();
+                String line = doc.getText(start, end - start - 1);
+                lines.add(line);
+
+            }
+
+            c_elements = gr.read(start_index, lines);
             if (c_elements.isEmpty()) {
                 return;
             }
@@ -614,7 +646,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * create the G-Code from the c_elements
+     * @deprecated create the G-Code from the c_elements
      *
      * @return
      */
@@ -687,6 +719,125 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
         }
         return new_code.toString();
+    }
+
+    /**
+     * relace changed lines in the editor
+     */
+    void replace_values() {
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+        DecimalFormat df = (DecimalFormat) nf;
+        df.applyPattern("0.###");
+        int machine = gr.getMachine();
+
+        Token t;
+
+        for (contourelement ce : c_elements) {
+            String out_line = "";
+            InputStream istream = new ByteArrayInputStream(ce.line.getBytes());
+            Gcodereader gr = new Gcodereader(istream);
+            t = gr.getNextToken();
+            int prev_end = 0;
+            int curr_start = 0;
+            int curr_end = 0;
+            ArrayList<String> out_line_arr = new ArrayList<>();
+            /*
+             read one line
+             */
+            while (!(t.kind == GcodereaderConstants.EOF)) {
+
+                parameter para = null;
+                boolean found = false;
+
+                System.out.println("Token: " + t.kind + ", " + t.image);
+                curr_start = t.beginColumn;
+                curr_end = t.endColumn;
+                String whitespace = "";
+                if (t.kind == GcodereaderConstants.PARAM) {
+                    curr_end--;
+                    whitespace = " "; // the long PARAM contains the whitespace after the tag, the SHORT_PARAM doesn't
+                }
+                para = new parameter();
+                // All parameters except G-functions
+                if (t.kind == GcodereaderConstants.PARAM || t.kind == GcodereaderConstants.SHORT_PARAM) {
+
+                    para.parse(t.image);
+
+                    if (para.name.compareTo("X") == 0 || para.name.compareTo("Z") == 0) {
+
+                        if (para.name.compareTo("X") == 0) {
+                            found = true;
+                            out_line_arr.add(ce.line.substring(prev_end, curr_start - 1));
+                            out_line_arr.add("X" + df.format(ce.points.getLast().y * 2.0) + whitespace);
+                        } else if (para.name.compareTo("Z") == 0) {
+                            found = true;
+                            out_line_arr.add(ce.line.substring(prev_end, curr_start - 1));
+                            out_line_arr.add("Z" + df.format(ce.points.getLast().x) + whitespace);
+                        }
+
+                    } else if (para.name.compareTo("B") == 0 || para.name.compareTo("CR") == 0) {
+                        if (ce.shape == contourelement.Shape.ARC) {
+                            if (para.name.compareTo("CR") == 0) {
+                                found = true;
+                                out_line_arr.add(ce.line.substring(prev_end, curr_start - 1));
+                                out_line_arr.add("CR=" + df.format(ce.radius) + whitespace);
+                            } else if (para.name.compareTo("B") == 0) {
+                                found = true;
+                                out_line_arr.add(ce.line.substring(prev_end, curr_start - 1));
+                                out_line_arr.add("B" + df.format(ce.radius) + whitespace);
+                            }
+                        }
+                    } else if (para.name.compareTo("I") == 0 || para.name.compareTo("J") == 0 || para.name.compareTo("K") == 0) {
+                        if (ce.shape == contourelement.Shape.ARC) {
+                            found = true;
+                            out_line_arr.add(ce.line.substring(prev_end, curr_start - 1));
+                            // only replace I with radius, not J and K
+                            if (para.name.compareTo("I") == 0) {
+                                if (machine == 1) {
+                                    out_line_arr.add("B" + df.format(ce.radius) + whitespace);
+                                } else {
+                                    out_line_arr.add("CR=" + df.format(ce.radius) + whitespace);
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+                if (found) {
+                    prev_end = curr_end;
+                    //prev_start = curr_start;
+                }
+                //System.out.println(out_line_arr.)
+                t = gr.getNextToken();
+            }
+
+            out_line_arr.add(ce.line.substring(prev_end, ce.line.length()));
+
+            int i = 0;
+            out_line = "";
+            for (i = 0; i < out_line_arr.size(); i++) {
+                out_line += out_line_arr.get(i);
+                //System.out.println(out_line);
+            }
+            System.out.println(out_line);
+            try {
+                JTextComponent ed = org.netbeans.api.editor.EditorRegistry.lastFocusedComponent();
+                Document doc = ed.getDocument();
+                Element root = doc.getDefaultRootElement();
+                Element contentEl = root.getElement(ce.abs_line_index);
+                int start = contentEl.getStartOffset();
+                int end = contentEl.getEndOffset();
+                doc.remove(start, end - start - 1);
+                doc.insertString(start, out_line, null);
+            } catch (BadLocationException ex) {
+                System.out.println(ex.getMessage());
+                JOptionPane.showMessageDialog(null, "Error: " + ex.toString());
+                return;
+            }
+
+        }
+
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCalculate;

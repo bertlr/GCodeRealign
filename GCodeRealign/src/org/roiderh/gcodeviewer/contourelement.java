@@ -117,6 +117,9 @@ public class contourelement {
     
     public boolean tangent = false;
     
+    public String line;
+    public int abs_line_index = -1;
+    
     /**
      * convert boolean to the values of Freedom
      * @param b

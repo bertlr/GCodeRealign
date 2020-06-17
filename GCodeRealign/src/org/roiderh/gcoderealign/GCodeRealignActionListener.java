@@ -19,8 +19,9 @@ package org.roiderh.gcoderealign;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javafx.application.Platform;
 import javax.swing.JOptionPane;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -53,6 +54,17 @@ public final class GCodeRealignActionListener implements ActionListener {
             JOptionPane.showMessageDialog(null, "Error: no open editor");
             return;
         }
+        int start = ed.getSelectionStart();
+        int end = ed.getSelectionEnd();
+        Document doc = ed.getDocument();
+        Element root = doc.getDefaultRootElement();
+        //Element start_el = doc.getParagraphElement(start);
+        //Element end_el = doc.getParagraphElement(end);
+        int start_index = root.getElementIndex(start);
+        int end_index = root.getElementIndex(end);
+        
+        
+        
         this.selectedText = ed.getSelectedText();
         if (selectedText == null) {
             JOptionPane.showMessageDialog(null, "Error: no selected Text");
@@ -62,25 +74,30 @@ public final class GCodeRealignActionListener implements ActionListener {
             JOptionPane.showMessageDialog(null, "Error: no selected Text");
             return;
         }
-
+       
+        
+        
+        
         /* Create and display the dialog */
         //Platform.runLater(new Runnable() {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
-                    DialogGenerateCode dialog = new DialogGenerateCode(selectedText, org.openide.windows.WindowManager.getDefault().getMainWindow(), true);
+                    //DialogGenerateCode dialog = new DialogGenerateCode(selectedText, org.openide.windows.WindowManager.getDefault().getMainWindow(), true);
+                    DialogGenerateCode dialog = new DialogGenerateCode(org.openide.windows.WindowManager.getDefault().getMainWindow(), true);
+                    
                     dialog.initGui();
                     dialog.setLocationRelativeTo(org.openide.windows.WindowManager.getDefault().getMainWindow());
                     
                     dialog.setVisible(true);
-                    if (dialog.canceled == false) {
-                        JTextComponent ed = org.netbeans.api.editor.EditorRegistry.lastFocusedComponent();
-                        if (ed == null) {
-                            return;
-                        }
-                        ed.replaceSelection(dialog.g_code);
-                    }
+//                    if (dialog.canceled == false) {
+//                        JTextComponent ed = org.netbeans.api.editor.EditorRegistry.lastFocusedComponent();
+//                        if (ed == null) {
+//                            return;
+//                        }
+//                        //d.replaceSelection(dialog.g_code);
+//                    }
 
                 } catch (Exception e1) {
                     System.out.println("Error " + e1.toString());

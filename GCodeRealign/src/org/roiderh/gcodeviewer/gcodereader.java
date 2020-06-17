@@ -16,14 +16,11 @@
  */
 package org.roiderh.gcodeviewer;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import org.roiderh.gcodeviewer.lexer.Gcodereader;
 import org.roiderh.gcodeviewer.lexer.GcodereaderConstants;
 import org.roiderh.gcodeviewer.lexer.Token;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,11 +28,11 @@ import java.util.Map;
 import java.util.regex.*;
 import java.util.LinkedList;
 import org.roiderh.gcodeviewer.customfunc.IncAbs;
-import math.geom2d.line.LineSegment2D;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.ListIterator;
 import math.geom2d.circulinear.CirculinearElement2D;
+import math.geom2d.line.LineSegment2D;
 import org.roiderh.gcodeviewer.customfunc.SinCosTan;
 
 /**
@@ -57,7 +54,7 @@ public class gcodereader {
      */
     public Collection<String> removed_params = null;
     
-    public LinkedList<contourelement> read(InputStream is) throws Exception {
+    public LinkedList<contourelement> read(int abs_start_index, ArrayList<String> lines) throws Exception {
         //FileInputStream is;
         //FileOutputStream os;
         this.messages = new HashSet<>();
@@ -109,13 +106,16 @@ public class gcodereader {
         //try {
         //os = new FileOutputStream(new File("/home/herbert/NetBeansProjects/gcodeviewer/src/gcodeviewer/punkte.txt"));
         Token t;
-        BufferedReader br;
+        //BufferedReader br;
         String line;
         InputStream istream;
-        br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+        //br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
         //InputStream line = new ByteArrayInputStream(this.selectedText.getBytes());
-        while ((line = br.readLine()) != null) {
-            linenumber++;
+        //while ((line = br.readLine()) != null) {
+        //Iterator<String> line_iter = lines.iterator();
+        for(int i=0;i < lines.size();i++){
+            linenumber++;     
+            line = lines.get(i);
             // remove comments, from semicolon to the line break.
             int semicolon_pos = line.indexOf(";");
             if (semicolon_pos >= 0) {
@@ -364,6 +364,8 @@ public class gcodereader {
 
             c_elem = new contourelement();
             c_elem.linenumber = linenumber;
+            c_elem.line = line.trim();
+            c_elem.abs_line_index = abs_start_index + i;
 
             // Transition Element:
             if (machine == 0) {
@@ -453,7 +455,7 @@ public class gcodereader {
                     c_elem.angle_free = false;
             }
             // add point only when movement
-            if (!last_pos.equals(current_pos) || contour.size() == 0) {
+            if (!last_pos.equals(current_pos) || contour.isEmpty()) {
                 contour.add(c_elem);
             }
             last_pos = current_pos;
