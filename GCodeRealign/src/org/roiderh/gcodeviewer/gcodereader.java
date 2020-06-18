@@ -52,13 +52,13 @@ public class gcodereader {
     /**
      * holds all params that removed in output gcode
      */
-    public Collection<String> removed_params = null;
+    public Collection<String> unrecognized_token = null;
     
     public LinkedList<contourelement> read(int abs_start_index, ArrayList<String> lines) throws Exception {
         //FileInputStream is;
         //FileOutputStream os;
         this.messages = new HashSet<>();
-        this.removed_params = new ArrayList<>();
+        this.unrecognized_token = new ArrayList<>();
         
         boolean G0 = false;
         boolean G1 = false;
@@ -180,7 +180,7 @@ public class gcodereader {
                                 break;
                         }
                     }else{
-                        this.removed_params.add("G" + sNumber + ", linenumber: " + String.valueOf(linenumber) + ", " + line);
+                        this.unrecognized_token.add("G" + sNumber + ", linenumber: " + String.valueOf(linenumber) + ", " + line);
                     }
 
                 }
@@ -197,7 +197,7 @@ public class gcodereader {
                 switch(para.name){
                     case "F":
                     case "M":
-                        this.removed_params.add(t.image + ", linenumber: " + String.valueOf(linenumber) + ", " + line);
+                        this.unrecognized_token.add(t.image + ", linenumber: " + String.valueOf(linenumber) + ", " + line);
                 }
                 if (para.name.compareTo("A") == 0) {
                     CalcException newExcept = new CalcException("\"A\" is not supported in line: " + String.valueOf(linenumber));

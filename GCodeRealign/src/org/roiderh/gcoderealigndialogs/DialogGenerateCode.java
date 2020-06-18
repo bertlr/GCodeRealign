@@ -455,9 +455,6 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         jButtonCancel = new javax.swing.JButton();
         jButtonOk = new javax.swing.JButton();
         jButtonCalculate = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextAreaMessages = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "DialogGenerateCode.title")); // NOI18N
@@ -469,7 +466,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
         jPanelView.setLayout(jPanelViewLayout);
         jPanelViewLayout.setHorizontalGroup(
             jPanelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 910, Short.MAX_VALUE)
+            .addGap(0, 973, Short.MAX_VALUE)
         );
         jPanelViewLayout.setVerticalGroup(
             jPanelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -484,44 +481,28 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
         org.openide.awt.Mnemonics.setLocalizedText(jButtonCalculate, org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "DialogGenerateCode.jButtonCalculate.text")); // NOI18N
 
-        jTextAreaMessages.setColumns(20);
-        jTextAreaMessages.setRows(5);
-        jScrollPane1.setViewportView(jTextAreaMessages);
-
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "DialogGenerateCode.jLabel1.text")); // NOI18N
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButtonCalculate)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButtonCancel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonOk)
-                        .addGap(67, 67, 67))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSplitPaneViewEditor, javax.swing.GroupLayout.PREFERRED_SIZE, 1057, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                .addContainerGap(971, Short.MAX_VALUE)
+                .addComponent(jButtonCalculate)
+                .addGap(18, 18, 18)
+                .addComponent(jButtonCancel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonOk)
+                .addGap(67, 67, 67))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jSplitPaneViewEditor)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPaneViewEditor)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1)))
+                .addComponent(jSplitPaneViewEditor)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCalculate)
@@ -612,12 +593,6 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
             if (c_elements.isEmpty()) {
                 return;
             }
-            String removed_params = "";
-            Iterator<String> it = gr.removed_params.iterator();
-            while (it.hasNext()) {
-                removed_params += it.next();
-            }
-            this.jTextAreaMessages.setText(removed_params);
 
             gr.calc_contour(c_elements);
 
@@ -803,7 +778,6 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 }
                 if (found) {
                     prev_end = curr_end;
-                    //prev_start = curr_start;
                 }
                 //System.out.println(out_line_arr.)
                 t = gr.getNextToken();
@@ -815,7 +789,6 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
             out_line = "";
             for (i = 0; i < out_line_arr.size(); i++) {
                 out_line += out_line_arr.get(i);
-                //System.out.println(out_line);
             }
             // replace the modified line:
             System.out.println(out_line);
@@ -841,10 +814,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
     private javax.swing.JButton jButtonCalculate;
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonOk;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanelView;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPaneViewEditor;
-    private javax.swing.JTextArea jTextAreaMessages;
     // End of variables declaration//GEN-END:variables
 }
