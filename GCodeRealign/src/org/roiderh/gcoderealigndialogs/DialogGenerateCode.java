@@ -751,12 +751,9 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
                 System.out.println("Token: " + t.kind + ", " + t.image);
                 curr_start = t.beginColumn;
-                curr_end = t.endColumn;
-                String whitespace = "";
-                if (t.kind == GcodereaderConstants.PARAM) {
-                    curr_end--;
-                    whitespace = " "; // the long PARAM contains the whitespace after the tag, the SHORT_PARAM doesn't
-                }
+                //curr_end = t.endColumn;
+                curr_end = curr_start + t.image.trim().length() - 1;
+
                 para = new parameter();
                 // All parameters except G-functions
                 if (t.kind == GcodereaderConstants.PARAM || t.kind == GcodereaderConstants.SHORT_PARAM) {
@@ -768,11 +765,11 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                         if (para.name.compareTo("X") == 0) {
                             found = true;
                             out_line_arr.add(ce.line.substring(prev_end, curr_start - 1));
-                            out_line_arr.add("X" + df.format(ce.points.getLast().y * 2.0) + whitespace);
+                            out_line_arr.add("X" + df.format(ce.points.getLast().y * 2.0));
                         } else if (para.name.compareTo("Z") == 0) {
                             found = true;
                             out_line_arr.add(ce.line.substring(prev_end, curr_start - 1));
-                            out_line_arr.add("Z" + df.format(ce.points.getLast().x) + whitespace);
+                            out_line_arr.add("Z" + df.format(ce.points.getLast().x));
                         }
 
                     } else if (para.name.compareTo("B") == 0 || para.name.compareTo("CR") == 0) {
@@ -780,11 +777,11 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                             if (para.name.compareTo("CR") == 0) {
                                 found = true;
                                 out_line_arr.add(ce.line.substring(prev_end, curr_start - 1));
-                                out_line_arr.add("CR=" + df.format(ce.radius) + whitespace);
+                                out_line_arr.add("CR=" + df.format(ce.radius));
                             } else if (para.name.compareTo("B") == 0) {
                                 found = true;
                                 out_line_arr.add(ce.line.substring(prev_end, curr_start - 1));
-                                out_line_arr.add("B" + df.format(ce.radius) + whitespace);
+                                out_line_arr.add("B" + df.format(ce.radius));
                             }
                         }
                     } else if (para.name.compareTo("I") == 0 || para.name.compareTo("J") == 0 || para.name.compareTo("K") == 0) {
@@ -794,9 +791,9 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                             // only replace I with radius, not J and K
                             if (para.name.compareTo("I") == 0) {
                                 if (machine == 1) {
-                                    out_line_arr.add("B" + df.format(ce.radius) + whitespace);
+                                    out_line_arr.add("B" + df.format(ce.radius));
                                 } else {
-                                    out_line_arr.add("CR=" + df.format(ce.radius) + whitespace);
+                                    out_line_arr.add("CR=" + df.format(ce.radius));
                                 }
                             }
 
@@ -811,8 +808,8 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 //System.out.println(out_line_arr.)
                 t = gr.getNextToken();
             }
-
-            out_line_arr.add(ce.line.substring(prev_end, ce.line.length()));
+            curr_start = ce.line.length();
+            out_line_arr.add(ce.line.substring(prev_end, curr_start));
 
             int i = 0;
             out_line = "";
@@ -820,6 +817,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 out_line += out_line_arr.get(i);
                 //System.out.println(out_line);
             }
+            // replace the modified line:
             System.out.println(out_line);
             try {
                 JTextComponent ed = org.netbeans.api.editor.EditorRegistry.lastFocusedComponent();
