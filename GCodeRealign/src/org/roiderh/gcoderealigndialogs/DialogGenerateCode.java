@@ -709,9 +709,11 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 
         for (contourelement ce : c_elements) {
             String out_line = "";
-            InputStream istream = new ByteArrayInputStream(ce.line.getBytes());
+            String in_line = ce.line;
+            // The parser needs an line break:
+            in_line += '\n';
+            InputStream istream = new ByteArrayInputStream(in_line.getBytes());
             Gcodereader gr = new Gcodereader(istream);
-            t = gr.getNextToken();
             int prev_end = 0;
             int curr_start = 0;
             int curr_end = 0;
@@ -719,8 +721,11 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
             /*
              read one line
              */
-            while (!(t.kind == GcodereaderConstants.EOF)) {
-
+            do {
+                t = gr.getNextToken();
+                if (t.kind == GcodereaderConstants.EOF) {
+                    break;
+                }
                 parameter para = null;
                 boolean found = false;
 
@@ -780,8 +785,8 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                     prev_end = curr_end;
                 }
                 //System.out.println(out_line_arr.)
-                t = gr.getNextToken();
-            }
+                //t = gr.getNextToken();
+            } while (!(t.kind == GcodereaderConstants.EOF));
             curr_start = ce.line.length();
             out_line_arr.add(ce.line.substring(prev_end, curr_start));
 
