@@ -100,6 +100,9 @@ public class contourelement {
     public double startangle;
     public double endangle;
     
+    // center point of the circle
+    public Point2D center;
+    
     // freedom of the endpoint
     public boolean x_free = false;
     public boolean y_free = false;

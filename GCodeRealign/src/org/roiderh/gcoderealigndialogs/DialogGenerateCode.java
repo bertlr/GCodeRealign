@@ -73,7 +73,8 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
     /**
      * @deprecated Field with the generated g-Code:
      */
-    public String g_code;
+     @Deprecated 
+     public String g_code;
     //public ArrayList<String> g_code_lines;
 
     /**
@@ -281,8 +282,8 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 //                    );
                     pl.addArc(handle, ce.points.getLast().x, contourelement.BooltoInt(ce.x_free),
                             ce.points.getLast().y, contourelement.BooltoInt(ce.y_free),
-                            geo.supportingCircle().center().x(), contourelement.BooltoInt(true),
-                            geo.supportingCircle().center().y(), contourelement.BooltoInt(true),
+                            ce.center.getX(), contourelement.BooltoInt(ce.x_center_free),
+                            ce.center.getY(), contourelement.BooltoInt(ce.y_center_free),
                             ce.radius, contourelement.BooltoInt(ce.radius_free),
                             ce.startangle, contourelement.BooltoInt(ce.startangle_free),
                             ce.endangle, contourelement.BooltoInt(ce.endangle_free),
@@ -625,7 +626,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
      *
      * @return
      */
-    public String createGCode() {
+    @Deprecated public String createGCode() {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
         DecimalFormat df = (DecimalFormat) nf;
         df.applyPattern("0.###");

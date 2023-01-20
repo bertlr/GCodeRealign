@@ -72,7 +72,7 @@ public class IncAbs extends PostfixMathCommand {
                         }
 
                         // push the result on the inStack
-                        inStack.push(new Double(r));
+                        inStack.push(r);
                 } else {
                         throw new ParseException("Invalid parameter type");
                 }

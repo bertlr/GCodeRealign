@@ -124,7 +124,7 @@ public class SinCosTan extends PostfixMathCommand {
        }
 
         // push the result on the inStack
-        inStack.push(new Double(r));
+        inStack.push(r);
 
     }
 }
