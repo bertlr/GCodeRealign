@@ -28,11 +28,11 @@ import contoursolveinterface.Contour;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Locale;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import javax.swing.border.Border;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
@@ -57,6 +57,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
     JFXPanel fxPanel = null;
     Toolpath toolpath = null;
     PanelLinesForm lineElementsForm = new PanelLinesForm();
+    Border border_empty, border_highlight;
     /**
      * encapsulate the geometry processor
      */
@@ -73,8 +74,8 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
     /**
      * @deprecated Field with the generated g-Code:
      */
-     @Deprecated 
-     public String g_code;
+    @Deprecated
+    public String g_code;
     //public ArrayList<String> g_code_lines;
 
     /**
@@ -88,6 +89,9 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
     }
 
     public void initGui() {
+        this.border_empty = BorderFactory.createLineBorder(Color.black);
+        this.border_highlight = BorderFactory.createMatteBorder(1, 5, 1, 5, Color.red);
+
         //java.util.ArrayList<String> values = new java.util.ArrayList<>();
         jButtonCancel.setActionCommand("cancel");
         jButtonCancel.addActionListener(this);
@@ -129,10 +133,10 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                     int j = lineElementsForm.panels.indexOf(me.getSource());
                     toolpath.highlightElement(j);// first Element is a point
                     for (PanelContourelement pc : lineElementsForm.panels) {
-                        pc.setBorder(BorderFactory.createLineBorder(Color.black));
+                        pc.setBorder(border_empty);
                     }
                     PanelContourelement pc = (PanelContourelement) me.getSource();
-                    pc.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+                    pc.setBorder(border_highlight);
 
                 }
 
@@ -228,6 +232,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 return;
             }
             this.test_calc_contour(elements);
+            lineElementsForm.setEditableFields();
             drawGraph();
             this.test_calc = false;
         }
@@ -251,28 +256,28 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                             ce.angle, contourelement.BooltoInt(ce.angle_free),
                             ce.tangent);
                 } else if (ce.shape == contourelement.Shape.ARC) {
-                    CircleArc2D geo = (CircleArc2D) ce.curve;
-                    double startAngle;
-                    double endAngle;
-                    if (ce.ccw == true) {
-                        startAngle = 0.5 * Math.PI + geo.getStartAngle();
-                        endAngle = 0.5 * Math.PI + (geo.getStartAngle() + geo.getAngleExtent());
-                    } else {
-                        startAngle = -0.5 * Math.PI + geo.getStartAngle();
-                        endAngle = -0.5 * Math.PI + (geo.getStartAngle() + geo.getAngleExtent());
-                    }
-                    if (startAngle > 2.0 * Math.PI) {
-                        startAngle -= 2.0 * Math.PI;
-                    }
-                    if (startAngle < -2.0 * Math.PI) {
-                        startAngle += 2.0 * Math.PI;
-                    }
-                    if (endAngle > 2.0 * Math.PI) {
-                        endAngle -= 2.0 * Math.PI;
-                    }
-                    if (endAngle < -2.0 * Math.PI) {
-                        endAngle += 2.0 * Math.PI;
-                    }
+//                    CircleArc2D geo = (CircleArc2D) ce.curve;
+//                    double startAngle;
+//                    double endAngle;
+//                    if (ce.ccw == true) {
+//                        startAngle = 0.5 * Math.PI + geo.getStartAngle();
+//                        endAngle = 0.5 * Math.PI + (geo.getStartAngle() + geo.getAngleExtent());
+//                    } else {
+//                        startAngle = -0.5 * Math.PI + geo.getStartAngle();
+//                        endAngle = -0.5 * Math.PI + (geo.getStartAngle() + geo.getAngleExtent());
+//                    }
+//                    if (startAngle > 2.0 * Math.PI) {
+//                        startAngle -= 2.0 * Math.PI;
+//                    }
+//                    if (startAngle < -2.0 * Math.PI) {
+//                        startAngle += 2.0 * Math.PI;
+//                    }
+//                    if (endAngle > 2.0 * Math.PI) {
+//                        endAngle -= 2.0 * Math.PI;
+//                    }
+//                    if (endAngle < -2.0 * Math.PI) {
+//                        endAngle += 2.0 * Math.PI;
+//                    }
 
 //                    System.out.println("Handle:" + handle + ", x" + ce.points.getLast().x + ", xfree=" + contourelement.BooltoInt(ce.x_free) + ", centery" + ce.points.getLast().y + ", centeryfree=" + contourelement.BooltoInt(ce.y_center_free)
 //                            + ", center_x" + geo.supportingCircle().center().x() + ", xfree=" + contourelement.BooltoInt(ce.x_center_free) + ", y" + geo.supportingCircle().center().y() + ", yfree=" + contourelement.BooltoInt(ce.x_center_free)
@@ -380,28 +385,28 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                         ce.angle, contourelement.BooltoInt(ce.angle_free),
                         ce.tangent);
             } else if (ce.shape == contourelement.Shape.ARC) {
-                CircleArc2D geo = (CircleArc2D) ce.curve;
-                double startAngle;
-                double endAngle;
-                if (ce.ccw == true) {
-                    startAngle = 0.5 * Math.PI + geo.getStartAngle();
-                    endAngle = 0.5 * Math.PI + (geo.getStartAngle() + geo.getAngleExtent());
-                } else {
-                    startAngle = -0.5 * Math.PI + geo.getStartAngle();
-                    endAngle = -0.5 * Math.PI + (geo.getStartAngle() + geo.getAngleExtent());
-                }
-                if (startAngle > 2.0 * Math.PI) {
-                    startAngle -= 2.0 * Math.PI;
-                }
-                if (startAngle < -2.0 * Math.PI) {
-                    startAngle += 2.0 * Math.PI;
-                }
-                if (endAngle > 2.0 * Math.PI) {
-                    endAngle -= 2.0 * Math.PI;
-                }
-                if (endAngle < -2.0 * Math.PI) {
-                    endAngle += 2.0 * Math.PI;
-                }
+//                CircleArc2D geo = (CircleArc2D) ce.curve;
+//                double startAngle;
+//                double endAngle;
+//                if (ce.ccw == true) {
+//                    startAngle = 0.5 * Math.PI + geo.getStartAngle();
+//                    endAngle = 0.5 * Math.PI + (geo.getStartAngle() + geo.getAngleExtent());
+//                } else {
+//                    startAngle = -0.5 * Math.PI + geo.getStartAngle();
+//                    endAngle = -0.5 * Math.PI + (geo.getStartAngle() + geo.getAngleExtent());
+//                }
+//                if (startAngle > 2.0 * Math.PI) {
+//                    startAngle -= 2.0 * Math.PI;
+//                }
+//                if (startAngle < -2.0 * Math.PI) {
+//                    startAngle += 2.0 * Math.PI;
+//                }
+//                if (endAngle > 2.0 * Math.PI) {
+//                    endAngle -= 2.0 * Math.PI;
+//                }
+//                if (endAngle < -2.0 * Math.PI) {
+//                    endAngle += 2.0 * Math.PI;
+//                }
 
 //                    System.out.println("Handle:" + handle + ", x" + ce.points.getLast().x + ", xfree=" + contourelement.BooltoInt(ce.x_free) + ", centery" + ce.points.getLast().y + ", centeryfree=" + contourelement.BooltoInt(ce.y_center_free)
 //                            + ", center_x" + geo.supportingCircle().center().x() + ", xfree=" + contourelement.BooltoInt(ce.x_center_free) + ", y" + geo.supportingCircle().center().y() + ", yfree=" + contourelement.BooltoInt(ce.x_center_free)
@@ -411,8 +416,8 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
 //                    );
                 c.addArc(handle, ce.points.getLast().x, contourelement.BooltoInt(ce.x_free),
                         ce.points.getLast().y, contourelement.BooltoInt(ce.y_free),
-                        geo.supportingCircle().center().x(), contourelement.BooltoInt(true),
-                        geo.supportingCircle().center().y(), contourelement.BooltoInt(true),
+                        ce.center.getX(), contourelement.BooltoInt(ce.x_center_free),
+                        ce.center.getY(), contourelement.BooltoInt(ce.y_center_free),
                         ce.radius, contourelement.BooltoInt(ce.radius_free),
                         ce.startangle, contourelement.BooltoInt(ce.startangle_free),
                         ce.endangle, contourelement.BooltoInt(ce.endangle_free),
@@ -626,7 +631,8 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
      *
      * @return
      */
-    @Deprecated public String createGCode() {
+    @Deprecated
+    public String createGCode() {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
         DecimalFormat df = (DecimalFormat) nf;
         df.applyPattern("0.###");

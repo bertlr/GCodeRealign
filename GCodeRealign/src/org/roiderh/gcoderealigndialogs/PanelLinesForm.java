@@ -64,6 +64,15 @@ public class PanelLinesForm extends JPanel {
         }
 
     }
+     public void setEditableFields() {
+
+        for (int i = 0; i < contour.size(); i++) {
+            PanelContourelement panel = panels.get(i);
+            panel.setEditableFields();
+
+        }
+
+    }
 
     public LinkedList<contourelement> getContour() {
        

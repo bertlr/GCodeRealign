@@ -102,7 +102,7 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
         c.fill = GridBagConstraints.HORIZONTAL;
 
         c.gridy = 0;
-        c.insets = new Insets(0, 5, 0, 5);  // padding
+        c.insets = new Insets(0, 3, 0, 3);  // padding
 
         c.gridx = 0;
         this.add(new JLabel("x"), c);
@@ -191,7 +191,6 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 this.add(new JLabel("cx"), c);
                 c.gridx = 1;
                 JTextField y_center_field = new JTextField();
-                //y_field.addFocusListener(this);
                 y_center_field.setPreferredSize(new Dimension(80, 16));
                 y_center_field.setMinimumSize(new Dimension(60, 16));
                 y_center_field.addFocusListener(this);
@@ -199,7 +198,6 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 c.gridx = 2;
                 JCheckBox y_center_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
                 y_center_free_field.addActionListener(this);
-                //y_free_field.addFocusListener(this);
                 this.add(y_center_free_field, c);
 
                 c.gridy++;
@@ -298,9 +296,6 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
         y_field.setText(df.format(ce.points.getLast().y * 2.0));
         x_field.setText(df.format(ce.points.getLast().x));
 
-        y_field.setEditable(!ce.y_free);
-        x_field.setEditable(!ce.x_free);
-
         y_free_field.setSelected(ce.y_free);
         x_free_field.setSelected(ce.x_free);
 
@@ -341,15 +336,11 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 startangle_field.setText(df.format(startAngle * 180.0 / Math.PI));
                 endangle_field.setText(df.format(endAngle * 180.0 / Math.PI));
 
-                startangle_field.setEditable(!ce.startangle_free);
-                endangle_field.setEditable(!ce.endangle_free);
-
                 startangle_free_field.setSelected(ce.startangle_free);
                 endangle_free_field.setSelected(ce.endangle_free);
 
                 radius_field.setText(df.format(ce.radius));
-                radius_field.setEditable(!ce.radius_free);
-
+                
                 radius_free_field.setSelected(ce.radius_free);
 
                 JCheckBox tangent_field = (JCheckBox) this.getComponent(16);
@@ -366,9 +357,6 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 y_center_field.setText(df.format(center.y() * 2.0));
                 x_center_field.setText(df.format(center.x()));
 
-                y_center_field.setEditable(!ce.y_center_free);
-                x_center_field.setEditable(!ce.x_center_free);
-
                 y_center_free_field.setSelected(ce.y_center_free);
                 x_center_free_field.setSelected(ce.x_center_free);
 
@@ -379,14 +367,56 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 JCheckBox angle_free_field = (JCheckBox) this.getComponent(8);
 
                 angle_field.setText(df.format(angle * 180.0 / Math.PI));
-                if (ce.axis_movement == 0) { // no orthogonal line
-                    angle_field.setEditable(!ce.angle_free);
-                }
+               
                 angle_free_field.setSelected(ce.angle_free);
 
                 JCheckBox tangent_field = (JCheckBox) this.getComponent(10);
 
                 tangent_field.setSelected(ce.tangent);
+
+            }
+        }
+        this.setEditableFields();
+
+    }
+
+    /**
+     * set textfields editable for constrainted values
+     */
+    public void setEditableFields() {
+
+        contourelement ce = this.current_ce;
+
+        JTextField y_field = (JTextField) this.getComponent(1);
+        JTextField x_field = (JTextField) this.getComponent(4);
+
+        y_field.setEditable(!ce.y_free);
+        x_field.setEditable(!ce.x_free);
+
+        if (prev_ce != null) {
+            if (ce.shape == contourelement.Shape.ARC) {
+
+                JTextField startangle_field = (JTextField) this.getComponent(7);
+                JTextField endangle_field = (JTextField) this.getComponent(10);
+                JTextField radius_field = (JTextField) this.getComponent(13);
+
+                startangle_field.setEditable(!ce.startangle_free);
+                endangle_field.setEditable(!ce.endangle_free);
+                radius_field.setEditable(!ce.radius_free);
+
+                JTextField y_center_field = (JTextField) this.getComponent(18);
+                JTextField x_center_field = (JTextField) this.getComponent(21);
+
+                y_center_field.setEditable(!ce.y_center_free);
+                x_center_field.setEditable(!ce.x_center_free);
+
+            } else if (ce.shape == contourelement.Shape.LINE) {
+
+                JTextField angle_field = (JTextField) this.getComponent(7);
+
+                if (ce.axis_movement == 0) { // no orthogonal line
+                    angle_field.setEditable(!ce.angle_free);
+                }
 
             }
         }
