@@ -37,7 +37,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
-import math.geom2d.conic.CircleArc2D;
 import org.roiderh.gcodeviewer.lexer.Gcodereader;
 import org.roiderh.gcodeviewer.lexer.GcodereaderConstants;
 import org.roiderh.gcodeviewer.lexer.Token;
@@ -307,7 +306,7 @@ public class DialogGenerateCode extends javax.swing.JDialog implements ActionLis
                 //System.out.println("keine Lösung gefunden!!!");
                 JOptionPane.showMessageDialog(null, "Error: no solution found");
                 return;
-            }
+            }       
             int size = pl.size(handle);
 
             //System.out.println("Handle=" + handle);

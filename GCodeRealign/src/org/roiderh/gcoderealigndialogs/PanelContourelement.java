@@ -216,7 +216,7 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 c.gridx = 1;
                 this.add(x_center_field, c);
                 c.gridx = 2;
-                JCheckBox x_center_free_field = new JCheckBox(); // NOI18N);
+                JCheckBox x_center_free_field = new JCheckBox(); 
                 x_center_free_field.setToolTipText(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
                 x_center_free_field.addActionListener(this);
                 this.add(x_center_free_field, c);
