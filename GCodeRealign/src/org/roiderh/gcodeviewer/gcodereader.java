@@ -48,18 +48,18 @@ public class gcodereader {
      *
      */
     public Collection<String> messages = null;
-    
+
     /**
      * holds all params that removed in output gcode
      */
     public Collection<String> unrecognized_token = null;
-    
+
     public LinkedList<contourelement> read(int abs_start_index, ArrayList<String> lines) throws Exception {
         //FileInputStream is;
         //FileOutputStream os;
         this.messages = new HashSet<>();
         this.unrecognized_token = new ArrayList<>();
-        
+
         boolean G0 = false;
         boolean G1 = false;
         boolean G2 = false;
@@ -113,8 +113,8 @@ public class gcodereader {
         //InputStream line = new ByteArrayInputStream(this.selectedText.getBytes());
         //while ((line = br.readLine()) != null) {
         //Iterator<String> line_iter = lines.iterator();
-        for(int i=0;i < lines.size();i++){
-            linenumber++;     
+        for (int i = 0; i < lines.size(); i++) {
+            linenumber++;
             line = lines.get(i);
             // remove comments, from semicolon to the line break.
             int semicolon_pos = line.indexOf(";");
@@ -140,8 +140,9 @@ public class gcodereader {
             Y_prev = Y;
             Z_prev = Z;
 
-            int active_axis = 0; // 1= x-axis (horizontal movement), 2=y-axis (vertical)
-
+            int active_axis_x = 0; // counts of calls in line f.e.:  Z3
+            int active_axis_y = 0;  // counts of calls in line f.e.: X1
+            
             istream = new ByteArrayInputStream(line.getBytes());
             Gcodereader gr = new Gcodereader(istream);
 
@@ -179,7 +180,7 @@ public class gcodereader {
                                 G3 = true;
                                 break;
                         }
-                    }else{
+                    } else {
                         this.unrecognized_token.add("G" + sNumber + ", linenumber: " + String.valueOf(linenumber) + ", " + line);
                     }
 
@@ -194,7 +195,7 @@ public class gcodereader {
                 if (para == null) {
                     continue;
                 }
-                switch(para.name){
+                switch (para.name) {
                     case "F":
                     case "M":
                         this.unrecognized_token.add(t.image + ", linenumber: " + String.valueOf(linenumber) + ", " + line);
@@ -295,15 +296,15 @@ public class gcodereader {
                         System.out.println("key " + para.name + " = " + val);
                         switch (para.name) {
                             case "X":
-                                active_axis += 2; // y-axis (vertical movement)
+                                active_axis_y++; // y-axis (vertical movement)
                                 X = val;
                                 break;
                             case "Y":
-                                //active_axis += 2; // not used
+                                //active_axis_y ++; // not used
                                 Y = val;
                                 break;
                             case "Z":
-                                active_axis += 1; // x-axis (horizontal movement)
+                                active_axis_x++; // x-axis (horizontal movement)
                                 Z = val;
                                 break;
 
@@ -442,8 +443,15 @@ public class gcodereader {
                 c_elem.transition_elem_size = 0.0;
 
             }
-            c_elem.axis_movement = active_axis;
-            switch(active_axis){
+
+            c_elem.axis_movement = 0;
+            if (active_axis_x > 0 && active_axis_y == 0) {
+                c_elem.axis_movement = 1; // x horizontal (Z)
+            } else if (active_axis_x == 0  && active_axis_y > 0) {
+                c_elem.axis_movement = 2; // y vertical  (X)
+            }
+
+            switch (c_elem.axis_movement) {
                 case 1:
                     c_elem.x_free = false;
                     c_elem.y_free = true;
@@ -593,17 +601,18 @@ public class gcodereader {
      * @return 840D = 0, 810T = 1
      */
     public int getMachine() {
-        if(this.machine == -1){
+        if (this.machine == -1) {
             return 0;
         }
         return this.machine;
     }
+
     /**
-     * 
-     * @param _m   840D = 0, 810T = 1
+     *
+     * @param _m 840D = 0, 810T = 1
      */
-    private void setMachine(int _m){
-        if(this.machine == -1){
+    private void setMachine(int _m) {
+        if (this.machine == -1) {
             this.machine = _m;
         }
     }
