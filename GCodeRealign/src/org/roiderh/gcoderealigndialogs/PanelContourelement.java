@@ -114,7 +114,8 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
         y_field.addFocusListener(this);
         this.add(y_field, c);
         c.gridx = 2;
-        JCheckBox y_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+        JCheckBox y_free_field = new JCheckBox();
+        y_free_field.setToolTipText(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
         y_free_field.addActionListener(this);
         //y_free_field.addFocusListener(this);
         this.add(y_free_field, c);
@@ -129,7 +130,8 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
         c.gridx = 1;
         this.add(x_field, c);
         c.gridx = 2;
-        JCheckBox x_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+        JCheckBox x_free_field = new JCheckBox();
+        x_free_field.setToolTipText(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
         x_free_field.addActionListener(this);
         this.add(x_free_field, c);
 
@@ -145,7 +147,8 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 startangle_field.addFocusListener(this);
                 this.add(startangle_field, c);
                 c.gridx = 2;
-                JCheckBox startangle_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+                JCheckBox startangle_free_field = new JCheckBox();
+                startangle_free_field.setToolTipText(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
                 startangle_free_field.addActionListener(this);
                 this.add(startangle_free_field, c);
 
@@ -159,7 +162,8 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 c.gridx = 1;
                 this.add(endangle_field, c);
                 c.gridx = 2;
-                JCheckBox endangle_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+                JCheckBox endangle_free_field = new JCheckBox();
+                endangle_free_field.setToolTipText(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
                 endangle_free_field.addActionListener(this);
                 this.add(endangle_free_field, c);
 
@@ -173,7 +177,8 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 c.gridx = 1;
                 this.add(radius_field, c);
                 c.gridx = 2;
-                JCheckBox radius_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+                JCheckBox radius_free_field = new JCheckBox();
+                radius_free_field.setToolTipText(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
                 radius_free_field.addActionListener(this);
                 this.add(radius_free_field, c);
 
@@ -196,7 +201,8 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 y_center_field.addFocusListener(this);
                 this.add(y_center_field, c);
                 c.gridx = 2;
-                JCheckBox y_center_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+                JCheckBox y_center_free_field = new JCheckBox();
+                y_center_free_field.setToolTipText(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
                 y_center_free_field.addActionListener(this);
                 this.add(y_center_free_field, c);
 
@@ -210,7 +216,8 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 c.gridx = 1;
                 this.add(x_center_field, c);
                 c.gridx = 2;
-                JCheckBox x_center_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+                JCheckBox x_center_free_field = new JCheckBox(); // NOI18N);
+                x_center_free_field.setToolTipText(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
                 x_center_free_field.addActionListener(this);
                 this.add(x_center_free_field, c);
 
@@ -244,7 +251,8 @@ public class PanelContourelement extends JPanel implements ActionListener, Focus
                 angle_field.addFocusListener(this);
                 this.add(angle_field, c);
                 c.gridx = 2;
-                JCheckBox angle_free_field = new JCheckBox(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
+                JCheckBox angle_free_field = new JCheckBox();
+                angle_free_field.setToolTipText(org.openide.util.NbBundle.getMessage(DialogGenerateCode.class, "PanelContourelement.jCheckBox_free.text")); // NOI18N);
                 angle_free_field.addActionListener(this);
                 this.add(angle_free_field, c);
 
