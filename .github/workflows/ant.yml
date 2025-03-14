@@ -35,21 +35,21 @@ jobs:
     # Run the ant command, with the required NetBeans properties set.
     - name: Run the Ant build target
       run: >-
-        ant -noinput -buildfile build.xml
+        ant -noinput -buildfile GCodeRealign/build.xml
         -Dnbplatform.default.netbeans.dest.dir=${{ github.workspace }}/netbeans
         -Dnbplatform.default.harness.dir=${{ github.workspace }}/netbeans/harness
         -Dcontinue.after.failing.tests=true -Ddo.not.clean.module.config.xml=true clean build
       # Run the ant command, with the required NetBeans properties set.
     - name: Run the Ant build target to create the netbeans module
       run: >-
-        ant -noinput -buildfile build.xml
+        ant -noinput -buildfile GCodeRealign/build.xml
         -Dnbplatform.default.netbeans.dest.dir=${{ github.workspace }}/netbeans
         -Dnbplatform.default.harness.dir=${{ github.workspace }}/netbeans/harness
         -Dcontinue.after.failing.tests=true nbm
 
     - name: create zip
       run: |
-        zip --junk-paths org-roiderh-gcoderealign build/*.nbm
+        zip --junk-paths org-roiderh-gcoderealign GCodeRealign/build/*.nbm
 
 
     - name: Release
